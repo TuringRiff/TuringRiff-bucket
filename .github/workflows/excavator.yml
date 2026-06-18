@@ -6,6 +6,10 @@ on:
     # run every 8 hours
     - cron: '20 */8 * * *'
 
+concurrency:
+  group: excavator
+  cancel-in-progress: true
+
 permissions:
   contents: write
   issues: write
@@ -22,6 +26,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SKIP_UPDATED: 1
+      - name: Close Resolved Failure Issues
+        if: success()
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'excavator-failure'
+            });
+            for (const issue of issues) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+                state_reason: 'completed'
+              });
+              console.log(`Closed resolved issue #${issue.number}`);
+            }
       - name: Report Failure
         if: failure()
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
