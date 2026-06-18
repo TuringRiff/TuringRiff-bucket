@@ -13,7 +13,7 @@
     "shortcuts": [
         [
             "flix.exe",
-            "Flix"
+            "..\\Flix"
         ]
     ],
     "installer": {
