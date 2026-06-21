@@ -1,12 +1,12 @@
 {
-    "version": "2.0.7.113",
+    "version": "2.1.3.116",
     "description": "Flix - Share files like chatting. Cross-platform LAN file transfer tool for fast sharing between devices.",
     "homepage": "https://flix.center",
     "license": "Freeware",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/Tobiichi-Origuchi/flix-pkg/releases/download/windows-v2.0.7.113/Flix-Windows-2.0.7.113-portable.zip",
-            "hash": "de5725ece72dade4bae9f07f49a29f8b7b6fa38b59d28724eccaa91e76d55f62"
+            "url": "https://github.com/Tobiichi-Origuchi/flix-pkg/releases/download/windows-v2.1.3.116/Flix-Windows-portable-2.1.3.116.zip",
+            "hash": "9c29afa5dd6746c03b826047d52f4753e35800d95436c5c43c2371231f1e6369"
         }
     },
     "bin": "flix.exe",
