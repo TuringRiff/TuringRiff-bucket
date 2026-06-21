@@ -36,7 +36,7 @@
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "https://github.com/Tobiichi-Origuchi/flix-pkg/releases/download/windows-v$version/Flix-Windows-$version-portable.zip"
+                "url": "https://github.com/Tobiichi-Origuchi/flix-pkg/releases/download/windows-v$version/Flix-Windows-portable-$version.zip"
             }
         },
         "hash": {
