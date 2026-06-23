@@ -1,16 +1,16 @@
 {
-    "version": "2.9.14",
+    "version": "2.9.16",
     "description": "Claude / Codex / Gemini API Proxy and Gateway",
     "homepage": "https://github.com/BenedictKing/ccx",
     "license": "MIT",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/BenedictKing/ccx/releases/download/v2.9.14/ccx-windows-amd64.exe#/ccx.exe",
-            "hash": "0ab05d8fb03a8804279c4d0cc52894a7021518997eabd3c04413139f8bd634c4"
+            "url": "https://github.com/BenedictKing/ccx/releases/download/v2.9.16/ccx-windows-amd64.exe#/ccx.exe",
+            "hash": "a22436780cbe4f65397ca0242aee27d1aba23666b28eaf87fefc3e14c9b0077f"
         },
         "arm64": {
-            "url": "https://github.com/BenedictKing/ccx/releases/download/v2.9.14/ccx-windows-arm64.exe#/ccx.exe",
-            "hash": "eb1a86f0db8495dc842abecbceb73c8b2ab5714613e1a7414b552363c6b8b6d2"
+            "url": "https://github.com/BenedictKing/ccx/releases/download/v2.9.16/ccx-windows-arm64.exe#/ccx.exe",
+            "hash": "9e7b399beccb187e13976fcdad95f804177df525d33e09a7fab14343302093ac"
         }
     },
     "bin": "ccx.exe",
