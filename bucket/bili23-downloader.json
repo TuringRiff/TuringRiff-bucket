@@ -1,13 +1,13 @@
 {
-    "version": "2.10.1",
+    "version": "2.10.2",
     "description": "Cross-platform Bilibili video downloader",
     "homepage": "https://github.com/ScottSloan/Bili23-Downloader",
     "license": "GPL-3.0",
     "extract_dir": "Bili23-Downloader",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/ScottSloan/Bili23-Downloader/releases/download/v2.10.1/Bili23-Downloader_2.10.1_windows_x64_portable.zip",
-            "hash": "1313acdbc9816bfef13c0696133a8a41a0fe79ceed2fa4aa22b67291b24b8ab3"
+            "url": "https://github.com/ScottSloan/Bili23-Downloader/releases/download/v2.10.2/Bili23-Downloader_2.10.2_windows_x64_portable.zip",
+            "hash": "dba044f629f3988da2c2ab092cd8a1b455e3bdbad5861883dbebe74719b7a622"
         }
     },
     "shortcuts": [
