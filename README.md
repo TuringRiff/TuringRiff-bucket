@@ -14,13 +14,17 @@ A personal [Scoop](https://scoop.sh) bucket for custom or hard-to-find Windows a
 | [antigravity-manager](bucket/antigravity-manager.json) | Antigravity account manager and switching tool | [GitHub](https://github.com/lbjlaq/Antigravity-Manager) |
 | [bili23-downloader](bucket/bili23-downloader.json) | Cross-platform Bilibili video downloader | [GitHub](https://github.com/ScottSloan/Bili23-Downloader) |
 | [ccx](bucket/ccx.json) | Claude / Codex / Gemini API Proxy and Gateway | [GitHub](https://github.com/BenedictKing/ccx) |
+| [chatwise](bucket/chatwise.json) | AI chatbot for many LLMs | [ChatWise](https://chatwise.app/) |
 | [cockpit-tools](bucket/cockpit-tools.json) | Universal AI IDE account manager with multi-account switching and quota monitoring | [GitHub](https://github.com/jlcodes99/cockpit-tools) |
 | [dashplayer](bucket/dashplayer.json) | A video player tailored for English learners | [GitHub](https://github.com/solidSpoon/DashPlayer) |
 | [drop-icons](bucket/drop-icons.json) | Drag and drop image to icon (.ico) converter, with batch processing and adaptive corners | [GitHub](https://github.com/genesistoxical/drop-icons) |
 | [flix](bucket/flix.json) | Chat-like cross-platform file transfer tool for fast sharing within local networks | [Flix](https://flix.center) |
 | [helium](bucket/helium.json) | Chromium-based web browser focused on privacy, unbiased ad-blocking, and simplicity | [Helium](https://helium.computer) |
+| [lx-music-desktop](bucket/lx-music-desktop.json) | Electron-based music player (LX Music Desktop) | [GitHub](https://github.com/lyswhut/lx-music-desktop) |
 | [mpv-lazy](bucket/mpv-lazy.json) | Modern mpv player configurations, Chinese-localized setup, shaders, and filter integration | [GitHub](https://github.com/hooke007/mpv_PlayKit) |
 | [pilinara](bucket/pilinara.json) | Flutter BiliBili desktop client forked from PiliPlus, with offline cache support | [GitHub](https://github.com/Starfallan/PiliNara) |
+| [readest](bucket/readest.json) | Open-source ebook reader for immersive and deep reading experiences | [Readest](https://readest.com/) |
+| [recordly](bucket/recordly.json) | Open-source screen recorder and editor for walkthroughs, demos, and product videos | [Recordly](https://recordly.dev/) |
 | [zedg](bucket/zedg.json) | Zed Editor (Localized / Chinese Translation) | [GitHub](https://github.com/x6nux/zed-globalization) |
 
 ## Usage
