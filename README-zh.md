@@ -25,6 +25,7 @@
 | [pilinara](bucket/pilinara.json) | 基于 PiliPlus 的 BiliBili Flutter 第三方桌面客户端，支持离线缓存 | [GitHub](https://github.com/Starfallan/PiliNara) |
 | [readest](bucket/readest.json) | 开源电子书阅读器，专注沉浸式深度阅读体验 | [Readest](https://readest.com/) |
 | [recordly](bucket/recordly.json) | 开源屏幕录制与编辑工具，适合演示、教程与产品视频 | [Recordly](https://recordly.dev/) |
+| [sumatrapdf-plus](bucket/sumatrapdf-plus.json) | SumatraPDF 非官方增强版，针对中文电子书、离线查词、主题与 PDF 智能暗黑模式等做了增强 | [GitHub](https://github.com/dengxibo/sumatrapdf-plus) |
 | [zedg](bucket/zedg.json) | Zed Editor 汉化版本 (Localized / 汉化版) | [GitHub](https://github.com/x6nux/zed-globalization) |
 
 ## 如何使用

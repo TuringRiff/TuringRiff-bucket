@@ -1,0 +1,46 @@
+{
+    "version": "3.7.6",
+    "description": "Unofficial fork of SumatraPDF with improvements for Chinese ebooks, offline lookup, themes, and smart PDF dark mode",
+    "homepage": "https://github.com/dengxibo/sumatrapdf-plus",
+    "license": "GPL-3.0-only,BSD-2-Clause",
+    "notes": [
+        "Full package includes fonts and offline dictionary for double-click word lookup.",
+        "This is a community fork of SumatraPDF (GPLv3), not an official release from sumatrapdfreader.org."
+    ],
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/dengxibo/sumatrapdf-plus/releases/download/v3.7.6/Sumatra.PDF.Plus.MainProgram+dictionary.zip",
+            "hash": "4a162b5536ca1c49ae45f1b470e3a534d9e1bb85e811abd4129d354e33fc48b3"
+        }
+    },
+    "pre_install": [
+        "$file = 'SumatraPDF-settings.txt'",
+        "if (!(Test-Path \"$persist_dir\\$file\")) {",
+        "    Write-Host 'File' $file 'does not exists. Creating.' -f Yellow",
+        "    Set-Content \"$dir\\$file\" 'CheckForUpdates = false' -Encoding Ascii",
+        "}",
+        "Get-ChildItem \"$dir\\SumatraPDF-*.exe\" | Rename-Item -NewName 'SumatraPDF.exe'"
+    ],
+    "bin": "SumatraPDF.exe",
+    "shortcuts": [
+        [
+            "SumatraPDF.exe",
+            "Sumatra PDF Plus"
+        ]
+    ],
+    "persist": [
+        "SumatraPDF-settings.txt",
+        "sumatrapdfcache"
+    ],
+    "checkver": "github",
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/dengxibo/sumatrapdf-plus/releases/download/v$version/Sumatra.PDF.Plus.MainProgram+dictionary.zip"
+            }
+        },
+        "hash": {
+            "mode": "download"
+        }
+    }
+}

@@ -25,6 +25,7 @@ A personal [Scoop](https://scoop.sh) bucket for custom or hard-to-find Windows a
 | [pilinara](bucket/pilinara.json) | Flutter BiliBili desktop client forked from PiliPlus, with offline cache support | [GitHub](https://github.com/Starfallan/PiliNara) |
 | [readest](bucket/readest.json) | Open-source ebook reader for immersive and deep reading experiences | [Readest](https://readest.com/) |
 | [recordly](bucket/recordly.json) | Open-source screen recorder and editor for walkthroughs, demos, and product videos | [Recordly](https://recordly.dev/) |
+| [sumatrapdf-plus](bucket/sumatrapdf-plus.json) | Unofficial SumatraPDF fork with Chinese ebook, offline lookup, themes, and smart PDF dark mode | [GitHub](https://github.com/dengxibo/sumatrapdf-plus) |
 | [zedg](bucket/zedg.json) | Zed Editor (Localized / Chinese Translation) | [GitHub](https://github.com/x6nux/zed-globalization) |
 
 ## Usage
