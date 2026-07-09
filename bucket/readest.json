@@ -2,10 +2,7 @@
     "version": "0.11.18",
     "description": "An open-source ebook reader designed for immersive and deep reading experiences",
     "homepage": "https://readest.com/",
-    "license": {
-        "identifier": "AGPL-3.0-or-later",
-        "url": "https://github.com/readest/readest/blob/main/LICENSE"
-    },
+    "license": "AGPL-3.0-or-later",
     "architecture": {
         "64bit": {
             "url": "https://github.com/readest/readest/releases/download/v0.11.18/Readest_0.11.18_x64-setup.exe#/dl.7z",

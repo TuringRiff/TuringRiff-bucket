@@ -2,7 +2,7 @@
     "version": "2.10.4",
     "description": "Cross-platform Bilibili video downloader",
     "homepage": "https://github.com/ScottSloan/Bili23-Downloader",
-    "license": "GPL-3.0",
+    "license": "GPL-3.0-only",
     "extract_dir": "Bili23-Downloader",
     "architecture": {
         "64bit": {

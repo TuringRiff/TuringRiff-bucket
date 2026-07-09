@@ -2,7 +2,7 @@
     "version": "26.4.0",
     "description": "An AI Chatbot for many LLMs",
     "homepage": "https://chatwise.app/",
-    "license": "freeware",
+    "license": "Freeware",
     "architecture": {
         "64bit": {
             "url": "https://releases.r2.chatwise.app/26.4.0/ChatWise-26.4.0-setup.exe#/dl.7z",

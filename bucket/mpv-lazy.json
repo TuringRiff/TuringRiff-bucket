@@ -2,10 +2,7 @@
     "version": "20260510",
     "description": "Preconfigured mpv player bundle with shaders, filters, and Chinese-localized settings",
     "homepage": "https://github.com/hooke007/mpv_PlayKit",
-    "license": {
-        "identifier": "Unlicense",
-        "url": "https://github.com/hooke007/mpv_PlayKit?tab=License-1-ov-file#License-1-ov-file"
-    },
+    "license": "Unlicense",
     "notes": [
         "To register mpv-lazy with the system (file associations, context menu), you can manually run: 'cmd /c \"$dir\\installer\\mpv-register.bat\"' (may require Administrator privileges).",
         "To unintegrate before uninstalling, run: 'cmd /c \"$dir\\installer\\mpv-unregister.bat\"'.",
