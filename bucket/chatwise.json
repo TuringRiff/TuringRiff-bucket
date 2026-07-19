@@ -1,12 +1,12 @@
 {
-    "version": "26.4.0",
+    "version": "26.7.3",
     "description": "An AI Chatbot for many LLMs",
     "homepage": "https://chatwise.app/",
     "license": "Freeware",
     "architecture": {
         "64bit": {
-            "url": "https://releases.r2.chatwise.app/26.4.0/ChatWise-26.4.0-setup.exe#/dl.7z",
-            "hash": "873748fd4affd1e89736134925a69340c1705d4250bf39c1ee42481c5fc21c30",
+            "url": "https://releases.chatwise.app/26.7.3/ChatWise-26.7.3-setup.exe#/dl.7z",
+            "hash": "ddcfb2483369b3ae14eda7bffd423cea02d22be2fb5b963a9bafe5c64a2ea87e",
             "installer": {
                 "script": [
                     "Expand-7ZipArchive \"$dir\\`$PLUGINSDIR\\app-64.7z\" \"$dir\" -Removal",
@@ -23,13 +23,13 @@
         ]
     ],
     "checkver": {
-        "url": "https://chatwise.app/",
-        "regex": "Download ([\\d.]+)"
+        "url": "https://releases.chatwise.app/releases",
+        "jsonpath": "$[0].version"
     },
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "https://releases.r2.chatwise.app/$version/ChatWise-$version-setup.exe#/dl.7z"
+                "url": "https://releases.chatwise.app/$version/ChatWise-$version-setup.exe#/dl.7z"
             }
         },
         "hash": {
