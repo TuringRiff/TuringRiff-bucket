@@ -44,6 +44,26 @@ scoop bucket add TuringRiff-bucket https://github.com/TuringRiff/TuringRiff-buck
 scoop install TuringRiff-bucket/<app-name>
 ```
 
+## Maintenance (auto-update monitoring)
+
+This bucket uses **Excavator** (`.github/workflows/excavator.yml`) on a schedule:
+
+1. **Excavate** — Scoop `checkver -Update` (per-app failures are soft; the job can stay green).
+2. **Detect outdated** — re-run `checkver -SkipUpdated` (read-only). Residual lag opens/updates a GitHub issue labeled **`manifest-outdated`**.
+3. When lag is gone, that issue is closed automatically.
+
+Hard workflow failures use the **`excavator-failure`** label.
+
+Local checks (requires Scoop):
+
+```powershell
+.\bin\checkver.ps1 -SkipUpdated    # should print nothing if all apps are current
+.\bin\detect-outdated.ps1          # markdown drift report
+.\bin\checkver.ps1 <app> -u        # force-update one manifest
+```
+
+Do **not** set `THROW_ERROR=1` on Excavator for multi-app buckets: one broken app would block updates for all others.
+
 ## Contributing
 
 Contributions are welcome! Please submit a Pull Request if you'd like to add or update an application manifest.

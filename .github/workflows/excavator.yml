@@ -26,6 +26,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SKIP_UPDATED: 1
+          # Do NOT set THROW_ERROR=1: one bad app would block updates for the whole bucket.
       - name: Close Resolved Failure Issues
         if: success()
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
@@ -69,3 +70,180 @@ jobs:
               labels: ['excavator-failure'],
               body: `The Excavator workflow encountered an error while scanning or updating manifests.\n\nPlease check the [Actions Log](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.`
             })
+
+  # Scoop treats per-app autoupdate failures as soft errors (Excavate can stay green).
+  # Re-run checkver without -Update; residual "upstream newer" becomes a visible Issue.
+  detect-outdated:
+    name: Detect outdated manifests
+    needs: excavate
+    if: always() && needs.excavate.result != 'cancelled'
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.ref_name || 'master' }}
+          fetch-depth: 0
+
+      - name: Install Scoop
+        shell: pwsh
+        run: |
+          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+          Invoke-RestMethod get.scoop.sh -OutFile install.ps1
+          .\install.ps1 -RunAsAdmin
+          scoop config aria2-enabled false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Detect residual outdated manifests
+        id: detect
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SCOOP_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          .\bin\detect-outdated.ps1 -Dir .\bucket -SummaryPath .\outdated-summary.md
+
+      - name: Upload drift summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: outdated-summary
+          path: outdated-summary.md
+          if-no-files-found: ignore
+
+      - name: Manage manifest-outdated issues
+        if: always() && steps.detect.outcome == 'success'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        env:
+          HAS_DRIFT: ${{ steps.detect.outputs.has_drift }}
+        with:
+          script: |
+            const fs = require('fs');
+            const label = 'manifest-outdated';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const hasDrift = (process.env.HAS_DRIFT || '').toLowerCase() === 'true';
+
+            let summary = '';
+            try {
+              summary = fs.readFileSync('outdated-summary.md', 'utf8');
+            } catch {
+              summary = '_No summary file produced._\n';
+            }
+
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: label
+              });
+            } catch {
+              try {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label,
+                  color: 'E4A73E',
+                  description: 'Bucket manifest lags upstream or checkver is broken'
+                });
+              } catch (e) {
+                console.log('createLabel skipped:', e.message);
+              }
+            }
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: label
+            });
+
+            if (!hasDrift) {
+              for (const issue of issues) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `Resolved: no residual outdated manifests on re-check.\n\nRun: ${runUrl}`
+                });
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  state: 'closed',
+                  state_reason: 'completed'
+                });
+                console.log(`Closed resolved issue #${issue.number}`);
+              }
+              return;
+            }
+
+            const body = [
+              'Excavator finished, but **one or more manifests still lag upstream** (or checkver errors remain).',
+              '',
+              'This usually means `checkver` found a new version, but `autoupdate` soft-failed (bad URL template, asset rename, hash failure, etc.) — the main Excavate step can still be green.',
+              '',
+              summary,
+              '',
+              `Actions run: ${runUrl}`,
+              '',
+              '### Fix locally',
+              '```powershell',
+              '.\\bin\\checkver.ps1 <app> -u',
+              '```'
+            ].join('\n');
+
+            if (issues.length > 0) {
+              const issue = issues[0];
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body
+              });
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `Updated after run ${runUrl}`
+              });
+              console.log(`Updated issue #${issue.number}`);
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '⚠️ Manifests lagging upstream (autoupdate soft-fail)',
+                labels: [label],
+                body
+              });
+              console.log('Created manifest-outdated issue');
+            }
+
+      - name: Report detect step failure
+        if: always() && steps.detect.outcome == 'failure'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'excavator-failure'
+            });
+            if (issues.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                body: `detect-outdated job failed.\n\n${runUrl}`
+              });
+              return;
+            }
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Excavator Auto-Update Workflow Failed',
+              labels: ['excavator-failure'],
+              body: `The **detect-outdated** job failed (could not verify residual manifest drift).\n\n${runUrl}`
+            });

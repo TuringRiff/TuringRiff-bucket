@@ -44,6 +44,26 @@ scoop bucket add TuringRiff-bucket https://github.com/TuringRiff/TuringRiff-buck
 scoop install TuringRiff-bucket/<应用名称>
 ```
 
+## 维护说明（自动更新监控）
+
+本仓库通过 **Excavator**（`.github/workflows/excavator.yml`）定时更新：
+
+1. **Excavate** — 运行 Scoop `checkver -Update`（单 app 失败为软错误，整次 job 仍可能是绿色）。
+2. **Detect outdated** — 再跑 `checkver -SkipUpdated`（只读）。若仍有滞后，创建/更新带 **`manifest-outdated`** 标签的 Issue。
+3. 滞后消除后，该 Issue 会自动关闭。
+
+整次流水线硬失败使用 **`excavator-failure`** 标签。
+
+本地自检（需已安装 Scoop）：
+
+```powershell
+.\bin\checkver.ps1 -SkipUpdated    # 全部最新时应无输出
+.\bin\detect-outdated.ps1          # 生成滞后报告
+.\bin\checkver.ps1 <app> -u        # 强制更新某个 manifest
+```
+
+多 app 的 bucket **不要**给 Excavator 开 `THROW_ERROR=1`：一个包失败会拖死整仓库更新。
+
 ## 贡献指南
 
 欢迎提交 Pull Request 来添加或更新应用配置 (Manifest)。
