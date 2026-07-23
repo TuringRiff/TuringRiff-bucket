@@ -24,7 +24,8 @@ param(
     [Switch] $FailOnOutdated
 )
 
-Set-StrictMode -Version Latest
+# Do NOT enable Set-StrictMode here: Scoop's checkver/core.ps1 probes optional
+# config properties (e.g. root_path). Under StrictMode that becomes a terminating error.
 $ErrorActionPreference = 'Stop'
 
 $Dir = (Resolve-Path $Dir).Path
@@ -70,11 +71,12 @@ if (-not $env:SCOOP_HOME) {
 }
 
 # Ensure Scoop shims + home are visible to nested scripts
-if ($env:SCOOP) {
-    $shim = Join-Path $env:SCOOP 'shims'
-    if ((Test-Path $shim) -and ($env:Path -notlike "*$shim*")) {
-        $env:Path = "$shim;$env:Path"
-    }
+if (-not $env:SCOOP) {
+    $env:SCOOP = Split-Path (Split-Path $env:SCOOP_HOME -Parent) -Parent
+}
+$shim = Join-Path $env:SCOOP 'shims'
+if ((Test-Path $shim) -and ($env:Path -notlike "*$shim*")) {
+    $env:Path = "$shim;$env:Path"
 }
 
 $checkver = Join-Path $env:SCOOP_HOME 'bin\checkver.ps1'
@@ -89,11 +91,23 @@ if (-not $env:SCOOP_GH_TOKEN -and $env:GITHUB_TOKEN) {
 $logPath = Join-Path ([System.IO.Path]::GetTempPath()) ("scoop-checkver-outdated-{0}.log" -f [guid]::NewGuid().ToString('n'))
 
 Write-Host "Running checkver -SkipUpdated on $Dir" -ForegroundColor Cyan
+Write-Host "SCOOP=$env:SCOOP SCOOP_HOME=$env:SCOOP_HOME" -ForegroundColor DarkGray
+
+# checkver is noisy and uses non-terminating patterns; never inherit Stop into Scoop
+$prevEap = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
+Set-StrictMode -Off
 Start-Transcript -Path $logPath -Force | Out-Null
 try {
     & $checkver -Dir $Dir -SkipUpdated
+    $checkverExit = $LASTEXITCODE
 } finally {
     Stop-Transcript | Out-Null
+    $ErrorActionPreference = $prevEap
+}
+
+if ($null -ne $checkverExit -and $checkverExit -ne 0) {
+    Write-Host "checkver exited with code $checkverExit (continuing to parse transcript)" -ForegroundColor Yellow
 }
 
 $logText = Get-Content -LiteralPath $logPath -Raw -ErrorAction SilentlyContinue
