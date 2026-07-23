@@ -29,11 +29,51 @@ $ErrorActionPreference = 'Stop'
 
 $Dir = (Resolve-Path $Dir).Path
 
-if (-not $env:SCOOP_HOME) {
+function Resolve-ScoopHome {
+    if ($env:SCOOP_HOME -and (Test-Path (Join-Path $env:SCOOP_HOME 'bin\checkver.ps1'))) {
+        return (Resolve-Path $env:SCOOP_HOME).Path
+    }
+
+    # Prefer "scoop prefix scoop" when shims are on PATH (local dev)
     try {
-        $env:SCOOP_HOME = Convert-Path (scoop prefix scoop)
+        $cmd = Get-Command scoop -ErrorAction Stop
+        if ($cmd) {
+            $prefix = & scoop prefix scoop 2>$null
+            if ($prefix -and (Test-Path (Join-Path $prefix 'bin\checkver.ps1'))) {
+                return (Resolve-Path $prefix).Path
+            }
+        }
     } catch {
-        throw "Scoop is not available. Install Scoop or set SCOOP_HOME. $_"
+        # ignore — fall through to well-known paths (CI often has Scoop installed but PATH not refreshed)
+    }
+
+    $roots = @()
+    if ($env:SCOOP) { $roots += $env:SCOOP }
+    $roots += (Join-Path $env:USERPROFILE 'scoop')
+    $roots += (Join-Path $env:USERPROFILE 'SCOOP')
+    if ($env:ProgramData) { $roots += (Join-Path $env:ProgramData 'scoop') }
+
+    foreach ($root in ($roots | Select-Object -Unique)) {
+        $candidate = Join-Path $root 'apps\scoop\current'
+        if (Test-Path (Join-Path $candidate 'bin\checkver.ps1')) {
+            if (-not $env:SCOOP) { $env:SCOOP = $root }
+            return (Resolve-Path $candidate).Path
+        }
+    }
+
+    return $null
+}
+
+$env:SCOOP_HOME = Resolve-ScoopHome
+if (-not $env:SCOOP_HOME) {
+    throw "Scoop is not available. Install Scoop or set SCOOP_HOME / SCOOP (and ensure apps\scoop\current\exists)."
+}
+
+# Ensure Scoop shims + home are visible to nested scripts
+if ($env:SCOOP) {
+    $shim = Join-Path $env:SCOOP 'shims'
+    if ((Test-Path $shim) -and ($env:Path -notlike "*$shim*")) {
+        $env:Path = "$shim;$env:Path"
     }
 }
 
