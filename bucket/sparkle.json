@@ -1,0 +1,55 @@
+{
+    "version": "1.26.6",
+    "description": "A Mihomo (Clash Meta) GUI client with Tun mode, themes, and WebDAV backup.",
+    "homepage": "https://github.com/xishang0128/sparkle",
+    "license": "GPL-3.0-only",
+    "notes": [
+        "Portable mode is enabled via the bundled PORTABLE marker; config and profiles are stored under 'data' (Scoop persist).",
+        "Default shortcut launches with 'noadmin' (skips UAC elevation).",
+        "Use 'Sparkle (Admin)' when elevated core permissions / Tun are required."
+    ],
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/xishang0128/sparkle/releases/download/1.26.6/sparkle-windows-1.26.6-x64-portable.7z",
+            "hash": "7b00c8c6b103a145b20c0288b6fdbe7bcd5f21bd19b10ddcb2dcaf793759d455"
+        },
+        "arm64": {
+            "url": "https://github.com/xishang0128/sparkle/releases/download/1.26.6/sparkle-windows-1.26.6-arm64-portable.7z",
+            "hash": "83187f94ace703b2dd4d99fb1acca5dd9c8b8f8884e41d2ca689465da9d5d6db"
+        }
+    },
+    "pre_install": [
+        "if (!(Test-Path \"$dir\\PORTABLE\")) { New-Item -ItemType File -Path \"$dir\\PORTABLE\" -Force | Out-Null }"
+    ],
+    "pre_uninstall": [
+        "$bucket = $install.bucket",
+        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        "Stop-App"
+    ],
+    "shortcuts": [
+        [
+            "Sparkle.exe",
+            "Sparkle",
+            "noadmin"
+        ],
+        [
+            "Sparkle.exe",
+            "Sparkle (Admin)"
+        ]
+    ],
+    "persist": "data",
+    "checkver": "github",
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/xishang0128/sparkle/releases/download/$version/sparkle-windows-$version-x64-portable.7z"
+            },
+            "arm64": {
+                "url": "https://github.com/xishang0128/sparkle/releases/download/$version/sparkle-windows-$version-arm64-portable.7z"
+            }
+        },
+        "hash": {
+            "mode": "download"
+        }
+    }
+}
