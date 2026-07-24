@@ -16,6 +16,7 @@ A personal [Scoop](https://scoop.sh) bucket for custom or hard-to-find Windows a
 | [ccx](bucket/ccx.json) | Claude / Codex / Gemini API Proxy and Gateway | [GitHub](https://github.com/BenedictKing/ccx) |
 | [chatwise](bucket/chatwise.json) | AI chatbot for many LLMs | [ChatWise](https://chatwise.app/) |
 | [cockpit-tools](bucket/cockpit-tools.json) | Universal AI IDE account manager with multi-account switching and quota monitoring | [GitHub](https://github.com/jlcodes99/cockpit-tools) |
+| [codex-plus-plus](bucket/codex-plus-plus.json) | External launcher and manager for the OpenAI Codex / ChatGPT desktop app | [GitHub](https://github.com/BigPizzaV3/CodexPlusPlus) |
 | [dashplayer](bucket/dashplayer.json) | A video player tailored for English learners | [GitHub](https://github.com/solidSpoon/DashPlayer) |
 | [drop-icons](bucket/drop-icons.json) | Drag and drop image to icon (.ico) converter, with batch processing and adaptive corners | [GitHub](https://github.com/genesistoxical/drop-icons) |
 | [flix](bucket/flix.json) | Chat-like cross-platform file transfer tool for fast sharing within local networks | [Flix](https://flix.center) |

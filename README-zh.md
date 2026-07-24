@@ -16,6 +16,7 @@
 | [ccx](bucket/ccx.json) | Claude / Codex / Gemini API 代理与网关 | [GitHub](https://github.com/BenedictKing/ccx) |
 | [chatwise](bucket/chatwise.json) | 支持多种大语言模型的 AI 聊天客户端 | [ChatWise](https://chatwise.app/) |
 | [cockpit-tools](bucket/cockpit-tools.json) | 通用 AI IDE 账号管理与切换工具，支持多账号切换和额度监控 | [GitHub](https://github.com/jlcodes99/cockpit-tools) |
+| [codex-plus-plus](bucket/codex-plus-plus.json) | OpenAI Codex / ChatGPT 桌面端外部启动器与管理工具 | [GitHub](https://github.com/BigPizzaV3/CodexPlusPlus) |
 | [dashplayer](bucket/dashplayer.json) | 为英语学习者量身打造的视频播放器 | [GitHub](https://github.com/solidSpoon/DashPlayer) |
 | [drop-icons](bucket/drop-icons.json) | 拖拽式图像到图标 (.ico) 转换器，支持批量处理与现代样式 | [GitHub](https://github.com/genesistoxical/drop-icons) |
 | [flix](bucket/flix.json) | Flix - 像聊天一样传文件。跨平台局域网设备间快速分享与文件传输工具 | [Flix](https://flix.center) |
