@@ -1,0 +1,37 @@
+{
+    "version": "3.3.5.7",
+    "description": "All-in-one screenshot tool with annotation, pinning, OCR and recording features",
+    "homepage": "https://pixpin.com/",
+    "license": "Freeware",
+    "url": "https://down.pixpin.cn/PixPin_win_3.3.5.7.zip",
+    "hash": "22eedc554a2e4cd1b1e1cdfc350189c797b2b1322d48066051c87c47848eb31b",
+    "extract_dir": "PixPin",
+    "pre_install": [
+        "$config = \"$persist_dir\\Config\\PixPinConfig.json\"",
+        "if (!(Test-Path $config)) {",
+        "    $time = [int][DateTimeOffset]::UtcNow.ToUnixTimeSeconds()",
+        "    $content = @{ 'System.Update.UpgradeMode#s.win' = @{ 'v' = 0; 't' = $time } } | ConvertTo-Json -Compress",
+        "    New-Item $config -Force -Value $content | Out-Null",
+        "}"
+    ],
+    "shortcuts": [
+        [
+            "PixPin.exe",
+            "PixPin"
+        ]
+    ],
+    "persist": [
+        "Config",
+        "Data",
+        "History",
+        "Temp"
+    ],
+    "checkver": {
+        "url": "https://pixpin.com/download/",
+        "useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "regex": "PixPin_win_([\\d.]+)\\.zip"
+    },
+    "autoupdate": {
+        "url": "https://down.pixpin.cn/PixPin_win_$version.zip"
+    }
+}
