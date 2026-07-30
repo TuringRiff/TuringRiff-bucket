@@ -9,11 +9,11 @@
     ],
     "architecture": {
         "64bit": {
-            "url": "https://github.com/jlcodes99/cockpit-tools/releases/download/v1.3.15/Cockpit.Tools_1.3.15_x64-setup.exe#/dl.7z",
-            "hash": "79d435128739d4c5ebfc53f9644a1a3d82f123dbd9cf390b4a5cee48ab584992"
+            "url": "https://github.com/jlcodes99/cockpit-tools/releases/download/v1.3.15/Cockpit.Tools_1.3.15_x64_en-US.msi",
+            "hash": "2eec0cc7a25d310cde1858dfe15b204066a817a12e8606f0cb66f042137e1522"
         }
     },
-    "post_install": "Remove-Item \"$dir\\`$PLUGINSDIR\" -Force -Recurse -ErrorAction SilentlyContinue",
+    "extract_dir": "PFiles\\Cockpit Tools",
     "bin": "cockpit-tools.exe",
     "shortcuts": [
         [
@@ -26,11 +26,11 @@
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "https://github.com/jlcodes99/cockpit-tools/releases/download/v$version/Cockpit.Tools_$version_x64-setup.exe#/dl.7z"
+                "url": "https://github.com/jlcodes99/cockpit-tools/releases/download/v$version/Cockpit.Tools_$version_x64_en-US.msi"
             }
         },
         "hash": {
-            "mode": "download"
+            "url": "$baseurl/SHA256SUMS.txt"
         }
     }
 }
