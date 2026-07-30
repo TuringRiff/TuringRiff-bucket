@@ -1,0 +1,60 @@
+{
+    "version": "1.3.6",
+    "description": "Lightweight and customizable desktop hardware monitoring tool",
+    "homepage": "https://github.com/Diorser/LiteMonitor",
+    "license": "MIT",
+    "notes": [
+        "LiteMonitor 的配置文件、网络流量历史记录以及自定义插件和主题均存储在 Scoop persist 目录中：",
+        "  - settings.json : 应用配置",
+        "  - TrafficHistory.json : 网络流量历史",
+        "  - resources\\plugins : 插件目录",
+        "  - resources\\themes : 主题目录"
+    ],
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/Diorser/LiteMonitor/releases/download/v1.3.6/LiteMonitor_v1.3.6-win-x64.zip",
+            "hash": "966c60e0e327d995f8f6edf59c630331a24fdc7aeb4c5765ab539cbf6a6471d7",
+            "extract_dir": "LiteMonitor_v1.3.6-win-x64"
+        }
+    },
+    "pre_install": [
+        "if (!(Test-Path \"$dir\\settings.json\") -or !(Get-Item \"$dir\\settings.json\").Length) {",
+        "    New-Item \"$dir\\settings.json\" -ItemType File -Force | Out-Null",
+        "    Set-Content -Path \"$dir\\settings.json\" -Value '{}'",
+        "}",
+        "if (!(Test-Path \"$dir\\TrafficHistory.json\") -or !(Get-Item \"$dir\\TrafficHistory.json\").Length) {",
+        "    New-Item \"$dir\\TrafficHistory.json\" -ItemType File -Force | Out-Null",
+        "    Set-Content -Path \"$dir\\TrafficHistory.json\" -Value '[]'",
+        "}"
+    ],
+    "pre_uninstall": [
+        "$bucket = $install.bucket",
+        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        "Stop-App"
+    ],
+    "bin": "LiteMonitor.exe",
+    "shortcuts": [
+        [
+            "LiteMonitor.exe",
+            "LiteMonitor"
+        ]
+    ],
+    "persist": [
+        "settings.json",
+        "TrafficHistory.json",
+        "resources\\plugins",
+        "resources\\themes"
+    ],
+    "checkver": "github",
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/Diorser/LiteMonitor/releases/download/v$version/LiteMonitor_v$version-win-x64.zip",
+                "extract_dir": "LiteMonitor_v$version-win-x64"
+            }
+        },
+        "hash": {
+            "mode": "download"
+        }
+    }
+}
