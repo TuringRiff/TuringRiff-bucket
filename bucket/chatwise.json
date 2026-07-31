@@ -1,12 +1,12 @@
 {
-    "version": "26.7.6",
+    "version": "26.7.8",
     "description": "An AI Chatbot for many LLMs",
     "homepage": "https://chatwise.app/",
     "license": "Freeware",
     "architecture": {
         "64bit": {
-            "url": "https://releases.chatwise.app/26.7.6/ChatWise-26.7.6-setup.exe#/dl.7z",
-            "hash": "f1265868431546a3e03960aa3e048712761496dc9dc66d9b9caf800edd345aa1"
+            "url": "https://releases.chatwise.app/26.7.8/ChatWise-26.7.8-setup.exe#/dl.7z",
+            "hash": "2fffd691433a2eaa873962d992acc0402c66608cb36b5f8323719d48a185aeb8"
         }
     },
     "installer": {
