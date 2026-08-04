@@ -21,6 +21,7 @@ A personal [Scoop](https://scoop.sh) bucket for custom or hard-to-find Windows a
 | [drop-icons](bucket/drop-icons.json) | Drag and drop image to icon (.ico) converter, with batch processing and adaptive corners | [GitHub](https://github.com/genesistoxical/drop-icons) |
 | [flix](bucket/flix.json) | Chat-like cross-platform file transfer tool for fast sharing within local networks | [Flix](https://flix.center) |
 | [helium](bucket/helium.json) | Chromium-based web browser focused on privacy, unbiased ad-blocking, and simplicity | [Helium](https://helium.computer) |
+| [listary-beta](bucket/listary-beta.json) | Smart file search tool and app launcher for Windows (V7 Beta) | [Listary V7](https://www.listary.com/v7) |
 | [lx-music-desktop](bucket/lx-music-desktop.json) | Electron-based music player (LX Music Desktop) | [GitHub](https://github.com/lyswhut/lx-music-desktop) |
 | [mpv-lazy](bucket/mpv-lazy.json) | Modern mpv player configurations, Chinese-localized setup, shaders, and filter integration | [GitHub](https://github.com/hooke007/mpv_PlayKit) |
 | [pilinara](bucket/pilinara.json) | Flutter BiliBili desktop client forked from PiliPlus, with offline cache support | [GitHub](https://github.com/Starfallan/PiliNara) |

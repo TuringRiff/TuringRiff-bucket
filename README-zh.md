@@ -21,6 +21,7 @@
 | [drop-icons](bucket/drop-icons.json) | 拖拽式图像到图标 (.ico) 转换器，支持批量处理与现代样式 | [GitHub](https://github.com/genesistoxical/drop-icons) |
 | [flix](bucket/flix.json) | Flix - 像聊天一样传文件。跨平台局域网设备间快速分享与文件传输工具 | [Flix](https://flix.center) |
 | [helium](bucket/helium.json) | 基于 Chromium 的网页浏览器，默认提供极佳的隐私保护、无偏见广告拦截与无臃肿体验 | [Helium](https://helium.computer) |
+| [listary-beta](bucket/listary-beta.json) | 极速 Windows 文件搜索与应用启动工具 (V7 Beta 测试版) | [Listary V7](https://www.listary.com/v7) |
 | [lx-music-desktop](bucket/lx-music-desktop.json) | 基于 Electron 的洛雪音乐助手桌面版 | [GitHub](https://github.com/lyswhut/lx-music-desktop) |
 | [mpv-lazy](bucket/mpv-lazy.json) | mpv-lazy 懒人包，整合了着色器与滤镜方案的 mpv 播放器中文配置 | [GitHub](https://github.com/hooke007/mpv_PlayKit) |
 | [pilinara](bucket/pilinara.json) | 基于 PiliPlus 的 BiliBili Flutter 第三方桌面客户端，支持离线缓存 | [GitHub](https://github.com/Starfallan/PiliNara) |

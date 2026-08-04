@@ -1,0 +1,32 @@
+{
+    "version": "7.0.0.7",
+    "description": "Smart file search tool and app launcher for Windows (V7 Beta)",
+    "homepage": "https://www.listary.com/v7",
+    "license": "Shareware",
+    "url": "https://dl.listary.net/v7/Listary.exe#/dl.exe",
+    "hash": "e82a5f1fe2c677ef5bc20c8d3db2a9b7aaea048597d783cf5139e5eaae4a4924",
+    "innosetup": true,
+    "shortcuts": [
+        [
+            "Listary.exe",
+            "Listary Beta"
+        ]
+    ],
+    "pre_install": [
+        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        "New-PersistDirectory \"$env:APPDATA\\Listary\" \"$persist_dir\\AppData\" -Migrate"
+    ],
+    "pre_uninstall": [
+        "$bucket = $install.bucket",
+        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        "Stop-App",
+        "Remove-Junction \"$env:APPDATA\\Listary\""
+    ],
+    "checkver": {
+        "url": "https://www.listary.com/v7",
+        "regex": "v([\\d.]+)\\s+Beta"
+    },
+    "autoupdate": {
+        "url": "https://dl.listary.net/v7/Listary.exe#/dl.exe"
+    }
+}
