@@ -1,10 +1,10 @@
 {
-    "version": "7.0.0.7",
+    "version": "7.0.0.9",
     "description": "Smart file search tool and app launcher for Windows (V7 Beta)",
     "homepage": "https://www.listary.com/v7",
     "license": "Shareware",
     "url": "https://dl.listary.net/v7/Listary.exe#/dl.exe",
-    "hash": "e82a5f1fe2c677ef5bc20c8d3db2a9b7aaea048597d783cf5139e5eaae4a4924",
+    "hash": "2e11705e7ab11179d05ddf2682140c80a6debb0819ba5cea23355cca427bf96c",
     "innosetup": true,
     "shortcuts": [
         [
