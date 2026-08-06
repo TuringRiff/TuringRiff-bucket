@@ -9,31 +9,6 @@
             "hash": "1baa769c9bf0632b4a192811025c96b0ec6fe78eea9e78c08f0821c64589f038"
         }
     },
-    "checkver": {
-        "github": "https://github.com/TuringRiff/browser-pkg-test"
-    },
-    "autoupdate": {
-        "url": "https://github.com/TuringRiff/browser-pkg-test/releases/download/v$version/RunningCheeseZen.7z",
-        "hash": {
-            "mode": "download"
-        }
-    },
-    "bin": [
-        [
-            "Zen\\zen.exe",
-            "RunningCheese Zen"
-        ]
-    ],
-    "shortcuts": [
-        [
-            "Zen\\zen.exe",
-            "RunningCheese Zen"
-        ]
-    ],
-    "persist": [
-        "Profiles",
-        "Tools"
-    ],
     "post_install": [
         "# 更新时 Scoop 已把新包 Profiles 备份为 Profiles.original 并链接回旧持久化数据；此处仅把新版 chrome 覆盖进旧 Profiles。",
         "if (Test-Path \"$dir\\Profiles.original\") {",
@@ -51,5 +26,30 @@
         "}",
         "# Tools 整目录持久化，新包中的 Tools.original 不保留。",
         "if (Test-Path \"$dir\\Tools.original\") { Remove-Item \"$dir\\Tools.original\" -Recurse -Force }"
-    ]
+    ],
+    "bin": [
+        [
+            "Zen\\zen.exe",
+            "RunningCheese Zen"
+        ]
+    ],
+    "shortcuts": [
+        [
+            "Zen\\zen.exe",
+            "RunningCheese Zen"
+        ]
+    ],
+    "persist": [
+        "Profiles",
+        "Tools"
+    ],
+    "checkver": {
+        "github": "https://github.com/TuringRiff/browser-pkg-test"
+    },
+    "autoupdate": {
+        "url": "https://github.com/TuringRiff/browser-pkg-test/releases/download/v$version/RunningCheeseZen.7z",
+        "hash": {
+            "mode": "download"
+        }
+    }
 }

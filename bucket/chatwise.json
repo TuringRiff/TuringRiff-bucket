@@ -16,15 +16,15 @@
             "Remove-Item \"$env:LOCALAPPDATA\\chatwise-updater\" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null"
         ]
     },
-    "pre_uninstall": [
-        "Remove-Item \"$env:LOCALAPPDATA\\chatwise-updater\" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null"
-    ],
     "bin": "ChatWise.exe",
     "shortcuts": [
         [
             "ChatWise.exe",
             "ChatWise"
         ]
+    ],
+    "pre_uninstall": [
+        "Remove-Item \"$env:LOCALAPPDATA\\chatwise-updater\" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null"
     ],
     "checkver": {
         "url": "https://releases.chatwise.app/releases",

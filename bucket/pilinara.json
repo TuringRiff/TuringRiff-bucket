@@ -10,12 +10,6 @@
         }
     },
     "extract_dir": "PiliNara-Win",
-    "shortcuts": [
-        [
-            "pilinara.exe",
-            "PiliNara"
-        ]
-    ],
     "installer": {
         "script": [
             ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
@@ -23,6 +17,12 @@
             "New-PersistDirectory \"$env:LOCALAPPDATA\\com.example\\PiliNara\" \"$persist_dir\\LocalAppData\" -Migrate"
         ]
     },
+    "shortcuts": [
+        [
+            "pilinara.exe",
+            "PiliNara"
+        ]
+    ],
     "pre_uninstall": [
         "$bucket = $install.bucket",
         ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",

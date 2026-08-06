@@ -17,16 +17,16 @@
             "New-PersistDirectory \"$env:AppData\\DashPlayer\" \"$persist_dir\\AppData\" -Migrate"
         ]
     },
-    "pre_uninstall": [
-        "$bucket = $install.bucket",
-        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
-        "Remove-Junction \"$env:AppData\\DashPlayer\""
-    ],
     "shortcuts": [
         [
             "dash-player.exe",
             "DashPlayer"
         ]
+    ],
+    "pre_uninstall": [
+        "$bucket = $install.bucket",
+        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        "Remove-Junction \"$env:AppData\\DashPlayer\""
     ],
     "checkver": "github",
     "autoupdate": {

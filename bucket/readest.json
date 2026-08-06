@@ -3,6 +3,10 @@
     "description": "An open-source ebook reader designed for immersive and deep reading experiences",
     "homepage": "https://readest.com/",
     "license": "AGPL-3.0-or-later",
+    "notes": [
+        "You may need to install Edge WebView2 Runtime to use Readest.",
+        "A WebView2 Runtime installer is available under the 'redist' folder of the Readest installation directory."
+    ],
     "architecture": {
         "64bit": {
             "url": "https://github.com/readest/readest/releases/download/v0.11.20/Readest_0.11.20_x64-setup.exe#/dl.7z",
@@ -22,17 +26,17 @@
             "New-PersistDirectory \"$env:LOCALAPPDATA\\com.bilingify.readest\" \"$persist_dir\\Local\" -Migrate"
         ]
     },
-    "pre_uninstall": [
-        "$bucket = $install.bucket",
-        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
-        "Remove-Junction \"$env:APPDATA\\com.bilingify.readest\"",
-        "Remove-Junction \"$env:LOCALAPPDATA\\com.bilingify.readest\""
-    ],
     "shortcuts": [
         [
             "readest.exe",
             "Readest"
         ]
+    ],
+    "pre_uninstall": [
+        "$bucket = $install.bucket",
+        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        "Remove-Junction \"$env:APPDATA\\com.bilingify.readest\"",
+        "Remove-Junction \"$env:LOCALAPPDATA\\com.bilingify.readest\""
     ],
     "checkver": {
         "github": "https://github.com/readest/readest"
@@ -46,9 +50,5 @@
                 "url": "https://github.com/readest/readest/releases/download/v$version/Readest_$version_arm64-setup.exe#/dl.7z"
             }
         }
-    },
-    "notes": [
-        "You may need to install Edge WebView2 Runtime to use Readest.",
-        "A WebView2 Runtime installer is available under the 'redist' folder of the Readest installation directory."
-    ]
+    }
 }

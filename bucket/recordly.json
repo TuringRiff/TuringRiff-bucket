@@ -17,17 +17,17 @@
             "New-PersistDirectory \"$env:APPDATA\\Recordly\" \"$persist_dir\\AppData\" -Migrate"
         ]
     },
-    "pre_uninstall": [
-        "$bucket = $install.bucket",
-        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
-        "Remove-Junction \"$env:APPDATA\\Recordly\"",
-        "Remove-Item \"$env:LocalAppData\\recordly-updater\" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null"
-    ],
     "shortcuts": [
         [
             "Recordly.exe",
             "Recordly"
         ]
+    ],
+    "pre_uninstall": [
+        "$bucket = $install.bucket",
+        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        "Remove-Junction \"$env:APPDATA\\Recordly\"",
+        "Remove-Item \"$env:LocalAppData\\recordly-updater\" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null"
     ],
     "checkver": {
         "github": "https://github.com/webadderallorg/Recordly"

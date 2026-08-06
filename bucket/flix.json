@@ -9,6 +9,12 @@
             "hash": "56a47962a0924ca1c13751c7dceeb2b74f57f3561f099fce8844969cdb3962f6"
         }
     },
+    "installer": {
+        "script": [
+            ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+            "New-PersistDirectory \"$env:APPDATA\\com.ifreedomer\\flix\" \"$persist_dir\\AppData\" -Migrate"
+        ]
+    },
     "bin": "flix.exe",
     "shortcuts": [
         [
@@ -16,12 +22,6 @@
             "..\\Flix"
         ]
     ],
-    "installer": {
-        "script": [
-            ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
-            "New-PersistDirectory \"$env:APPDATA\\com.ifreedomer\\flix\" \"$persist_dir\\AppData\" -Migrate"
-        ]
-    },
     "pre_uninstall": [
         "$bucket = $install.bucket",
         ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",

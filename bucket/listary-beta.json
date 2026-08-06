@@ -6,15 +6,15 @@
     "url": "https://dl.listary.net/v7/Listary.exe#/dl.exe",
     "hash": "2e11705e7ab11179d05ddf2682140c80a6debb0819ba5cea23355cca427bf96c",
     "innosetup": true,
+    "pre_install": [
+        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        "New-PersistDirectory \"$env:APPDATA\\Listary\" \"$persist_dir\\AppData\" -Migrate"
+    ],
     "shortcuts": [
         [
             "Listary.exe",
             "Listary Beta"
         ]
-    ],
-    "pre_install": [
-        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
-        "New-PersistDirectory \"$env:APPDATA\\Listary\" \"$persist_dir\\AppData\" -Migrate"
     ],
     "pre_uninstall": [
         "$bucket = $install.bucket",
