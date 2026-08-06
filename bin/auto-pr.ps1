@@ -3,7 +3,9 @@ param(
     [String]$upstream = "TuringRiff/TuringRiff-bucket:master"
 )
 
-if (!$env:SCOOP_HOME) { $env:SCOOP_HOME = Convert-Path (scoop prefix scoop) }
+. "$PSScriptRoot\_forward-dir.ps1"
+$env:SCOOP_HOME = Get-ScoopHome
+if (-not $env:SCOOP_HOME) { throw 'Scoop is not available. Install Scoop or set SCOOP_HOME.' }
+$fwd = Get-BucketDirAndArgs -InputArgs $Args
 $autopr = "$env:SCOOP_HOME/bin/auto-pr.ps1"
-$dir = "$PSScriptRoot/../bucket" # checks the parent dir
-& $autopr -Dir $dir -Upstream $Upstream @Args
+& $autopr -Dir $fwd.Dir -Upstream $Upstream @($fwd.Passthrough)
