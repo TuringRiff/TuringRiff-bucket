@@ -36,9 +36,6 @@
             "64bit": {
                 "url": "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v$version/CodexPlusPlus-$version-windows-x64.zip"
             }
-        },
-        "hash": {
-            "mode": "download"
         }
     }
 }

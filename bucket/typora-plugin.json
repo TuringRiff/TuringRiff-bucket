@@ -62,9 +62,6 @@
     },
     "checkver": "github",
     "autoupdate": {
-        "url": "https://github.com/obgnail/typora_plugin/releases/download/$version/typora-plugin@v$version.zip",
-        "hash": {
-            "mode": "download"
-        }
+        "url": "https://github.com/obgnail/typora_plugin/releases/download/$version/typora-plugin@v$version.zip"
     }
 }

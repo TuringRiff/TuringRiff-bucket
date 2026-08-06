@@ -23,9 +23,6 @@
             "64bit": {
                 "url": "https://github.com/genesistoxical/drop-icons/releases/download/$version/Drop-Icons.zip"
             }
-        },
-        "hash": {
-            "mode": "download"
         }
     }
 }

@@ -32,9 +32,6 @@
             "64bit": {
                 "url": "https://github.com/builtbybel/FluentCleaner/releases/download/classic-$version/FluentCleaner-Classic-net48.zip"
             }
-        },
-        "hash": {
-            "mode": "download"
         }
     }
 }

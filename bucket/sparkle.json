@@ -40,9 +40,6 @@
             "arm64": {
                 "url": "https://github.com/xishang0128/sparkle/releases/download/$version/sparkle-windows-$version-arm64-portable.7z"
             }
-        },
-        "hash": {
-            "mode": "download"
         }
     }
 }

@@ -32,9 +32,6 @@
             "64bit": {
                 "url": "https://github.com/hooke007/mpv_PlayKit/releases/download/$version/mpv-lazy-$version.exe#/dl.7z"
             }
-        },
-        "hash": {
-            "mode": "download"
         }
     }
 }

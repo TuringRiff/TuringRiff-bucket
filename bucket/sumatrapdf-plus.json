@@ -38,9 +38,6 @@
             "64bit": {
                 "url": "https://github.com/dengxibo/sumatrapdf-plus/releases/download/$version/Sumatra.PDF.Plus.MainProgram+dictionary.zip"
             }
-        },
-        "hash": {
-            "mode": "download"
         }
     }
 }

@@ -47,9 +47,6 @@
         "github": "https://github.com/TuringRiff/browser-pkg-test"
     },
     "autoupdate": {
-        "url": "https://github.com/TuringRiff/browser-pkg-test/releases/download/v$version/RunningCheeseZen.7z",
-        "hash": {
-            "mode": "download"
-        }
+        "url": "https://github.com/TuringRiff/browser-pkg-test/releases/download/v$version/RunningCheeseZen.7z"
     }
 }
