@@ -25,6 +25,9 @@
     ],
     "checkver": "github",
     "autoupdate": {
-        "url": "https://github.com/vladelaina/Catime/releases/download/v$version/catime_$version.exe#/catime.exe"
+        "url": "https://github.com/vladelaina/Catime/releases/download/v$version/catime_$version.exe#/catime.exe",
+        "hash": {
+            "mode": "download"
+        }
     }
 }

@@ -26,6 +26,9 @@
         "regex": "v([\\d.]+)\\s+Beta"
     },
     "autoupdate": {
-        "url": "https://dl.listary.net/v7/Listary.exe#/dl.exe"
+        "url": "https://dl.listary.net/v7/Listary.exe#/dl.exe",
+        "hash": {
+            "mode": "download"
+        }
     }
 }

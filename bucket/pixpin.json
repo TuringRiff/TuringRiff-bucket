@@ -32,6 +32,9 @@
         "regex": "PixPin_win_([\\d.]+)\\.zip"
     },
     "autoupdate": {
-        "url": "https://down.pixpin.cn/PixPin_win_$version.zip"
+        "url": "https://down.pixpin.cn/PixPin_win_$version.zip",
+        "hash": {
+            "mode": "download"
+        }
     }
 }

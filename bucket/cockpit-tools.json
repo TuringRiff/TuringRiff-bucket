@@ -30,7 +30,8 @@
             }
         },
         "hash": {
-            "url": "$baseurl/SHA256SUMS.txt"
+            "url": "$baseurl/SHA256SUMS.txt",
+            "regex": "(?m)^([a-f0-9]{64})\\s+Cockpit\\.Tools_$version_x64_en-US\\.msi$"
         }
     }
 }
