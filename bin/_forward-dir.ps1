@@ -36,3 +36,29 @@ function Get-ScoopHome {
 
     return $null
 }
+
+# checkver prints each part of a line with separate Write-Host calls (e.g.
+# "$name: " and the version). Capturing the information stream yields those
+# fragments without the newlines that the host renders. Reconstruct console
+# lines: a fragment that does not start a new "app: ..." line is a
+# continuation of the current line.
+function ConvertTo-CheckverLines {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [AllowEmptyString()]
+        [string[]] $Fragments
+    )
+
+    $lines = [System.Collections.Generic.List[string]]::new()
+    foreach ($fragment in $Fragments) {
+        if ([string]::IsNullOrEmpty($fragment)) { continue }
+        if (($lines.Count -gt 0) -and ($fragment -notmatch '^\s*[\w*][\w.-]*:')) {
+            $lines[$lines.Count - 1] += $fragment
+        } else {
+            $lines.Add($fragment)
+        }
+    }
+
+    return $lines.ToArray()
+}

@@ -53,8 +53,6 @@ if (-not $env:SCOOP_GH_TOKEN -and $env:GITHUB_TOKEN) {
     $env:SCOOP_GH_TOKEN = $env:GITHUB_TOKEN
 }
 
-$logPath = Join-Path ([System.IO.Path]::GetTempPath()) ("scoop-checkver-outdated-{0}.log" -f [guid]::NewGuid().ToString('n'))
-
 Write-Host "Running checkver -SkipUpdated on $Dir" -ForegroundColor Cyan
 Write-Host "SCOOP=$env:SCOOP SCOOP_HOME=$env:SCOOP_HOME" -ForegroundColor DarkGray
 
@@ -62,30 +60,26 @@ Write-Host "SCOOP=$env:SCOOP SCOOP_HOME=$env:SCOOP_HOME" -ForegroundColor DarkGr
 $prevEap = $ErrorActionPreference
 $ErrorActionPreference = 'Continue'
 Set-StrictMode -Off
-Start-Transcript -Path $logPath -Force | Out-Null
-try {
-    & $checkver -Dir $Dir -SkipUpdated
-    $checkverExit = $LASTEXITCODE
-} finally {
-    Stop-Transcript | Out-Null
-    $ErrorActionPreference = $prevEap
-}
 
-if ($null -ne $checkverExit -and $checkverExit -ne 0) {
-    Write-Host "checkver exited with code $checkverExit (continuing to parse transcript)" -ForegroundColor Yellow
-}
+# checkver prints via Write-Host in fragments (e.g. "$name: " and the version are
+# separate calls). Start-Transcript turns each fragment into its own transcript
+# line, which breaks line-based parsing below. Capture the information stream and
+# reconstruct the real console lines from the fragments.
+$captured = @(& $checkver -Dir $Dir -SkipUpdated 6>&1 | ForEach-Object { "$_" })
+$ErrorActionPreference = $prevEap
 
-$logText = Get-Content -LiteralPath $logPath -Raw -ErrorAction SilentlyContinue
+$logLines = ConvertTo-CheckverLines -Fragments $captured
+$logText = $logLines -join "`r`n"
 if (-not $logText) { $logText = '' }
 
-Write-Host '----- checkver transcript -----' -ForegroundColor DarkGray
+Write-Host '----- checkver output -----' -ForegroundColor DarkGray
 Write-Host $logText
-Write-Host '----- end transcript -----' -ForegroundColor DarkGray
+Write-Host '----- end checkver output -----' -ForegroundColor DarkGray
 
 $outdated = [System.Collections.Generic.List[object]]::new()
 $errors = [System.Collections.Generic.List[string]]::new()
 
-foreach ($line in ($logText -split "`r?`n")) {
+foreach ($line in $logLines) {
     $trim = $line.Trim()
     if (-not $trim) { continue }
 
@@ -104,11 +98,10 @@ foreach ($line in ($logText -split "`r?`n")) {
         continue
     }
 
-    if (
-        $trim -match '^(?<app>[\w*][\w.-]*):\s+(?<msg>.+)$' -and
-        $trim -notmatch '\(scoop version is' -and
-        $Matches.msg -match "couldn't|not valid|error|failed|unable|timeout|404|exception"
-    ) {
+    # Any remaining per-app line is a checkver failure. Skip plain
+    # "app: version" lines in case the script is run without -SkipUpdated.
+    if ($trim -match '^(?<app>[\w*][\w.-]*):\s+(?<msg>.+)$') {
+        if ($trim -match '^[\w*][\w.-]*:\s+\S+$') { continue }
         $errors.Add($trim) | Out-Null
     }
 }
@@ -172,8 +165,6 @@ if ($env:GITHUB_OUTPUT) {
 if ($env:GITHUB_STEP_SUMMARY) {
     Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary -Encoding utf8
 }
-
-Remove-Item -LiteralPath $logPath -Force -ErrorAction SilentlyContinue
 
 if ($FailOnOutdated -and $hasDrift) {
     exit 1
