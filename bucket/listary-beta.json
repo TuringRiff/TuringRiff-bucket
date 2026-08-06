@@ -23,6 +23,7 @@
     ],
     "checkver": {
         "url": "https://www.listary.com/v7",
+        "useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
         "regex": "v([\\d.]+)\\s+Beta"
     },
     "autoupdate": {

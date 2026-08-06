@@ -4,7 +4,7 @@
     "homepage": "https://github.com/hooke007/mpv_PlayKit",
     "license": "Unlicense",
     "notes": [
-        "To register mpv-lazy with the system (file associations, context menu), you can manually run: 'cmd /c \"$dir\\installer\\mpv-register.bat\"' (may require Administrator privileges).",
+        "To register mpv-lazy with the system (file associations, context menu), run: 'cmd /c \"$dir\\installer\\mpv-register.bat\"' (may require Administrator privileges).",
         "To unintegrate before uninstalling, run: 'cmd /c \"$dir\\installer\\mpv-unregister.bat\"'.",
         "Recommended personal configurations can be appended to '$dir\\portable_config\\mpv.conf':",
         "  vf = vapoursynth=\"~~/vs/MEMC_MVT_LQ.vpy\"",

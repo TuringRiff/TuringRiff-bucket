@@ -5,7 +5,7 @@
     "license": "AGPL-3.0-or-later",
     "notes": [
         "You may need to install Edge WebView2 Runtime to use Readest.",
-        "A WebView2 Runtime installer is available under the 'redist' folder of the Readest installation directory."
+        "A WebView2 Runtime installer is available in '$dir\\redist'."
     ],
     "architecture": {
         "64bit": {
@@ -19,7 +19,7 @@
     },
     "installer": {
         "script": [
-            "Remove-Item \"$dir\\`$PLUGINSDIR\" -Force -Recurse",
+            "Remove-Item \"$dir\\`$PLUGINSDIR\" -Force -Recurse -ErrorAction SilentlyContinue",
             "if (Test-Path \"$dir\\`$TEMP\") { Rename-Item -Path \"$dir\\`$TEMP\" -NewName \"redist\" }",
             ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
             "New-PersistDirectory \"$env:APPDATA\\com.bilingify.readest\" \"$persist_dir\\Roaming\" -Migrate",

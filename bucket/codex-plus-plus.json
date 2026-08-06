@@ -2,12 +2,12 @@
     "version": "1.2.44",
     "description": "External launcher and manager for the OpenAI Codex / ChatGPT desktop app, with provider switching and UI enhancements via CDP (does not modify official app files).",
     "homepage": "https://github.com/BigPizzaV3/CodexPlusPlus",
-    "license": "AGPL-3.0",
+    "license": "AGPL-3.0-only",
     "notes": [
         "Requires the official OpenAI Codex / ChatGPT desktop app.",
         "First-time setup: open Codex++ Manager, verify the app path, configure a provider, then launch via Codex++.",
-        "Settings are stored under '%APPDATA%\\com.bigpizzav3.codexplusplus.manager'.",
-        "To remove user data on uninstall: scoop uninstall --purge codex-plus-plus"
+        "Settings are stored under '%APPDATA%\\com.bigpizzav3.codexplusplus.manager' and '%LOCALAPPDATA%\\com.bigpizzav3.codexplusplus.manager'.",
+        "To remove all user data on uninstall, run: scoop uninstall --purge codex-plus-plus"
     ],
     "architecture": {
         "64bit": {

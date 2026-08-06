@@ -4,11 +4,8 @@
     "homepage": "https://github.com/Diorser/LiteMonitor",
     "license": "MIT",
     "notes": [
-        "LiteMonitor 的配置文件、网络流量历史记录以及自定义插件和主题均存储在 Scoop persist 目录中：",
-        "  - settings.json : 应用配置",
-        "  - TrafficHistory.json : 网络流量历史",
-        "  - resources\\plugins : 插件目录",
-        "  - resources\\themes : 主题目录"
+        "LiteMonitor 的配置、网络流量历史、自定义插件和主题均保存在持久化目录（$persist_dir），更新时会保留。",
+        "主要文件：settings.json、TrafficHistory.json，以及 resources\\plugins、resources\\themes。"
     ],
     "architecture": {
         "64bit": {
