@@ -29,7 +29,7 @@ permissions:
 
 jobs:
   lint:
-    name: Lint manifests
+    name: Lint
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -37,6 +37,20 @@ jobs:
       - name: Run manifest linter
         shell: pwsh
         run: .\bin\lint.ps1
+      - name: Install and cache PSScriptAnalyzer
+        uses: potatoqualitee/psmodulecache@ee5e9494714abf56f6efbfa51527b2aec5c761b8 # v6.2.1
+        with:
+          modules-to-cache: PSScriptAnalyzer
+          shell: pwsh
+      - name: Run PowerShell analyzer
+        shell: pwsh
+        run: |
+          $results = @(Invoke-ScriptAnalyzer -Path .\bin -Settings .\PSScriptAnalyzerSettings.psd1 -Recurse)
+          if ($results.Count -gt 0) {
+            $results | Format-Table -AutoSize
+            exit 1
+          }
+          Write-Host 'PSScriptAnalyzer: no errors.'
 
   test:
     name: Test
