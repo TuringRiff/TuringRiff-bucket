@@ -1,12 +1,12 @@
 {
-    "version": "26.07.05",
+    "version": "1.10.091",
     "description": "Lightweight Windows system cleaning tool built with .NET Framework 4.8 and WinForms",
     "homepage": "https://github.com/builtbybel/FluentCleaner",
     "license": "MIT",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/builtbybel/FluentCleaner/releases/download/26.07.05/FluentCleaner-Classic-net48.zip",
-            "hash": "f0b16604570f8c03693ad7796b0deeef6d277e1a736eadb29cc01c0dcf88457b"
+            "url": "https://github.com/builtbybel/FluentCleaner/releases/download/classic-1.10.091/FluentCleaner-Classic-net48.zip",
+            "hash": "88f1ae41ef723958a59e8e089f8ef591d02da73136dec093e9e1de6fabe5b6f1"
         }
     },
     "extract_dir": "FluentCleaner-Classic-net48",
@@ -23,11 +23,14 @@
         ]
     ],
     "persist": "settings.json",
-    "checkver": "github",
+    "checkver": {
+        "url": "https://api.github.com/repos/builtbybel/FluentCleaner/releases?per_page=100",
+        "regex": "https://github\\.com/builtbybel/FluentCleaner/releases/download/classic-(?<version>[\\d.]+)/FluentCleaner-Classic-net48\\.zip"
+    },
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "https://github.com/builtbybel/FluentCleaner/releases/download/$version/FluentCleaner-Classic-net48.zip"
+                "url": "https://github.com/builtbybel/FluentCleaner/releases/download/classic-$version/FluentCleaner-Classic-net48.zip"
             }
         },
         "hash": {

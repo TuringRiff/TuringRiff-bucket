@@ -23,7 +23,10 @@
         ]
     ],
     "persist": "settings.json",
-    "checkver": "github",
+    "checkver": {
+        "url": "https://api.github.com/repos/builtbybel/FluentCleaner/releases?per_page=100",
+        "regex": "https://github\\.com/builtbybel/FluentCleaner/releases/download/(?<version>[\\d.]+)/FluentCleaner-win-x64\\.zip"
+    },
     "autoupdate": {
         "architecture": {
             "64bit": {
