@@ -85,40 +85,8 @@ jobs:
           ref: ${{ github.ref_name || 'master' }}
           fetch-depth: 0
 
-      - name: Install Scoop
-        shell: pwsh
-        run: |
-          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
-          Invoke-RestMethod get.scoop.sh -OutFile install.ps1
-          # Non-interactive CI install; -RunAsAdmin is required by the installer on GHA runners
-          .\install.ps1 -RunAsAdmin
-
-          $scoopRoot = Join-Path $env:USERPROFILE 'scoop'
-          if (-not (Test-Path $scoopRoot)) {
-            $scoopRoot = Join-Path $env:USERPROFILE 'SCOOP'
-          }
-          $scoopHome = Join-Path $scoopRoot 'apps\scoop\current'
-          $shims = Join-Path $scoopRoot 'shims'
-
-          if (-not (Test-Path (Join-Path $scoopHome 'bin\checkver.ps1'))) {
-            throw "Scoop install failed: checkver not found under $scoopHome"
-          }
-
-          # Persist for subsequent steps (new shells do not inherit installer PATH tweaks)
-          "SCOOP=$scoopRoot" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-          "SCOOP_HOME=$scoopHome" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-          $shims | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
-
-          $env:SCOOP = $scoopRoot
-          $env:SCOOP_HOME = $scoopHome
-          $env:Path = "$shims;$env:Path"
-
-          scoop config aria2-enabled false
-          Write-Host "SCOOP=$env:SCOOP"
-          Write-Host "SCOOP_HOME=$env:SCOOP_HOME"
-          scoop --version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Scoop (cached)
+        uses: ./.github/actions/setup-scoop
 
       - name: Detect residual outdated manifests
         id: detect

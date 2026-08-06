@@ -22,36 +22,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Install Scoop
-        shell: pwsh
-        run: |
-          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
-          Invoke-RestMethod get.scoop.sh -OutFile install.ps1
-          .\install.ps1 -RunAsAdmin
-
-          $scoopRoot = Join-Path $env:USERPROFILE 'scoop'
-          if (-not (Test-Path $scoopRoot)) {
-            $scoopRoot = Join-Path $env:USERPROFILE 'SCOOP'
-          }
-          $scoopHome = Join-Path $scoopRoot 'apps\scoop\current'
-          $shims = Join-Path $scoopRoot 'shims'
-
-          if (-not (Test-Path (Join-Path $scoopHome 'bin\checkver.ps1'))) {
-            throw "Scoop install failed: checkver not found under $scoopHome"
-          }
-
-          "SCOOP=$scoopRoot" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-          "SCOOP_HOME=$scoopHome" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-          $shims | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
-
-          $env:SCOOP = $scoopRoot
-          $env:SCOOP_HOME = $scoopHome
-          $env:Path = "$shims;$env:Path"
-
-          scoop config aria2-enabled false
-          scoop --version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Scoop (cached)
+        uses: ./.github/actions/setup-scoop
 
       - name: Run checkver health check
         id: health

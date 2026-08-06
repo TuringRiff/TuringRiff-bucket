@@ -1,0 +1,89 @@
+name: Setup Scoop
+description: >-
+  Install Scoop (or restore it from the Actions cache) and export SCOOP,
+  SCOOP_HOME, and PATH for subsequent steps. The cache key rotates weekly
+  and stale copies are refreshed with `scoop update` when restored.
+runs:
+  using: composite
+  steps:
+    - name: Resolve Scoop root
+      id: resolve
+      shell: pwsh
+      run: |
+        $scoopRoot = if ($env:SCOOP) { $env:SCOOP } else { Join-Path $env:USERPROFILE 'scoop' }
+        if (-not (Test-Path $scoopRoot)) {
+          $candidate = Join-Path $env:USERPROFILE 'SCOOP'
+          if (Test-Path $candidate) { $scoopRoot = $candidate }
+        }
+
+        $utcNow = [System.DateTime]::UtcNow
+        $cacheWeek = '{0}-W{1:00}' -f [System.Globalization.ISOWeek]::GetYear($utcNow), [System.Globalization.ISOWeek]::GetWeekOfYear($utcNow)
+
+        "scoop_root=$scoopRoot" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+        "cache_week=$cacheWeek" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+        Write-Host "Scoop root: $scoopRoot"
+        Write-Host "Cache week: $cacheWeek"
+
+    - name: Cache Scoop
+      id: cache
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      with:
+        path: "${{ steps.resolve.outputs.scoop_root }}"
+        key: scoop-${{ runner.os }}-${{ steps.resolve.outputs.cache_week }}
+        restore-keys: |
+          scoop-${{ runner.os }}-
+
+    - name: Ensure Scoop
+      id: ensure
+      shell: pwsh
+      run: |
+        Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+        $installed = 'false'
+
+        $scoopRoot = if ($env:SCOOP) { $env:SCOOP } else { Join-Path $env:USERPROFILE 'scoop' }
+        if (-not (Test-Path $scoopRoot)) {
+          $candidate = Join-Path $env:USERPROFILE 'SCOOP'
+          if (Test-Path $candidate) { $scoopRoot = $candidate }
+        }
+        $scoopHome = Join-Path $scoopRoot 'apps\scoop\current'
+        $shims = Join-Path $scoopRoot 'shims'
+
+        if (-not (Test-Path (Join-Path $scoopHome 'bin\checkver.ps1'))) {
+          Write-Host 'Scoop not found in cache; installing...'
+          Invoke-RestMethod get.scoop.sh -OutFile install.ps1
+          # Non-interactive CI install; -RunAsAdmin is required by the installer on GHA runners
+          .\install.ps1 -RunAsAdmin
+          $installed = 'true'
+
+          $scoopRoot = if ($env:SCOOP) { $env:SCOOP } else { Join-Path $env:USERPROFILE 'scoop' }
+          if (-not (Test-Path $scoopRoot)) {
+            $candidate = Join-Path $env:USERPROFILE 'SCOOP'
+            if (Test-Path $candidate) { $scoopRoot = $candidate }
+          }
+          $scoopHome = Join-Path $scoopRoot 'apps\scoop\current'
+          $shims = Join-Path $scoopRoot 'shims'
+        }
+
+        if (-not (Test-Path (Join-Path $scoopHome 'bin\checkver.ps1'))) {
+          throw "Scoop install failed: checkver not found under $scoopHome"
+        }
+
+        # Export for subsequent steps (new shells do not inherit installer PATH tweaks)
+        "SCOOP=$scoopRoot" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "SCOOP_HOME=$scoopHome" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        $shims | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+        $env:SCOOP = $scoopRoot
+        $env:SCOOP_HOME = $scoopHome
+        $env:Path = "$shims;$env:Path"
+
+        scoop config aria2-enabled false
+        scoop --version
+        "installed=$installed" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+    - name: Update cached Scoop
+      if: steps.cache.outputs.cache-hit != 'true' && steps.ensure.outputs.installed == 'false'
+      shell: pwsh
+      run: |
+        scoop update
+        scoop --version
