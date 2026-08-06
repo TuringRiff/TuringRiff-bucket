@@ -28,6 +28,16 @@ permissions:
   contents: read
 
 jobs:
+  lint:
+    name: Lint manifests
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Run manifest linter
+        shell: pwsh
+        run: .\bin\lint.ps1
+
   test:
     name: Test
     runs-on: windows-latest
