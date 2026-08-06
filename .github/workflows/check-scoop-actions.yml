@@ -1,0 +1,139 @@
+name: Check Scoop Actions Pin
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Weekly on Monday 09:00 HKT (01:00 UTC)
+    - cron: '0 1 * * 1'
+
+concurrency:
+  group: check-scoop-actions
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Check ScoopInstaller/GithubActions pin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Compare pinned and latest SHA
+        id: detect
+        shell: bash
+        run: |
+          latest="$(git ls-remote https://github.com/ScoopInstaller/GithubActions.git HEAD | cut -f1)"
+          pins="$(grep -rhoE 'ScoopInstaller/GithubActions@[0-9a-f]{40}' .github/workflows | sed -E 's/.*@//' | sort -u)"
+          stale="false"
+          if [ -z "$pins" ]; then
+            stale="true"
+          else
+            while IFS= read -r pin; do
+              if [ "$pin" != "$latest" ]; then
+                stale="true"
+                break
+              fi
+            done <<< "$pins"
+          fi
+          printf 'latest_sha=%s\n' "$latest" >> "$GITHUB_OUTPUT"
+          printf 'pinned_sha=%s\n' "$(printf '%s' "$pins" | tr '\n' ',')" >> "$GITHUB_OUTPUT"
+          printf 'stale=%s\n' "$stale" >> "$GITHUB_OUTPUT"
+
+      - name: Manage stale-pin issues
+        if: always()
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        env:
+          LATEST_SHA: ${{ steps.detect.outputs.latest_sha }}
+          PINNED_SHA: ${{ steps.detect.outputs.pinned_sha }}
+          STALE: ${{ steps.detect.outputs.stale }}
+        with:
+          script: |
+            const label = 'deps-stale';
+            const stale = (process.env.STALE || '').toLowerCase() === 'true';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            if (!process.env.STALE) {
+              console.log('detect step did not produce a result; skipping issue management.');
+              return;
+            }
+
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: label
+              });
+            } catch {
+              try {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label,
+                  color: 'D93F0B',
+                  description: 'ScoopInstaller/GithubActions main-snapshot pin is behind upstream HEAD'
+                });
+              } catch (e) {
+                console.log('createLabel skipped:', e.message);
+              }
+            }
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: label
+            });
+
+            if (!stale) {
+              for (const issue of issues) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `Pinned SHA is current (${process.env.LATEST_SHA}). Closing.\n\nRun: ${runUrl}`
+                });
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  state: 'closed',
+                  state_reason: 'completed'
+                });
+                console.log(`Closed resolved issue #${issue.number}`);
+              }
+              return;
+            }
+
+            const body = [
+              '`ScoopInstaller/GithubActions` is pinned to a `main` snapshot, so Dependabot cannot track it.',
+              '',
+              `- Pinned: \`${process.env.PINNED_SHA}\``,
+              `- Upstream \`main\` HEAD: \`${process.env.LATEST_SHA}\``,
+              '',
+              'Update the pin in `.github/workflows/{excavator,pull_request,issues}.yml`, then re-run the **Check Scoop Actions Pin** workflow to close this issue.',
+              '',
+              `Actions run: ${runUrl}`
+            ].join('\n');
+
+            if (issues.length > 0) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                body
+              });
+              console.log(`Updated issue #${issues[0].number}`);
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'ScoopInstaller/GithubActions pin is stale',
+                labels: [label],
+                body
+              });
+              console.log('Created deps-stale issue');
+            }
