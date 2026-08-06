@@ -1,0 +1,166 @@
+name: Checkver Health
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Daily at 03:30 UTC (11:30 HKT); runs after Excavator's 00:20 UTC run.
+    - cron: '30 3 * * *'
+
+concurrency:
+  group: checkver-health
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  health:
+    name: Checkver health
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install Scoop
+        shell: pwsh
+        run: |
+          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+          Invoke-RestMethod get.scoop.sh -OutFile install.ps1
+          .\install.ps1 -RunAsAdmin
+
+          $scoopRoot = Join-Path $env:USERPROFILE 'scoop'
+          if (-not (Test-Path $scoopRoot)) {
+            $scoopRoot = Join-Path $env:USERPROFILE 'SCOOP'
+          }
+          $scoopHome = Join-Path $scoopRoot 'apps\scoop\current'
+          $shims = Join-Path $scoopRoot 'shims'
+
+          if (-not (Test-Path (Join-Path $scoopHome 'bin\checkver.ps1'))) {
+            throw "Scoop install failed: checkver not found under $scoopHome"
+          }
+
+          "SCOOP=$scoopRoot" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "SCOOP_HOME=$scoopHome" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          $shims | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+          $env:SCOOP = $scoopRoot
+          $env:SCOOP_HOME = $scoopHome
+          $env:Path = "$shims;$env:Path"
+
+          scoop config aria2-enabled false
+          scoop --version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run checkver health check
+        id: health
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SCOOP_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          .\bin\checkver-health.ps1 -Dir .\bucket -SummaryPath .\checkver-health-summary.md
+
+      - name: Upload health summary
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: checkver-health-summary
+          path: checkver-health-summary.md
+          if-no-files-found: ignore
+
+      - name: Close resolved checkver-failure issues
+        if: steps.health.outcome == 'success'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'checkver-failure'
+            });
+            for (const issue of issues) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+                state_reason: 'completed'
+              });
+              console.log(`Closed resolved issue #${issue.number}`);
+            }
+
+      - name: Report checkver failure
+        if: failure() && steps.health.outcome == 'failure'
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const fs = require('fs');
+            const label = 'checkver-failure';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            let summary = '_No summary file produced._\n';
+            try {
+              summary = fs.readFileSync('checkver-health-summary.md', 'utf8');
+            } catch {}
+
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: label
+              });
+            } catch {
+              try {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label,
+                  color: 'D93F0B',
+                  description: 'Scheduled checkver health check failed'
+                });
+              } catch (e) {
+                console.log('createLabel skipped:', e.message);
+              }
+            }
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: label
+            });
+
+            const body = [
+              'Checkver health check failed: one or more manifests cannot be checked, or updates are not landing.',
+              '',
+              summary,
+              '',
+              `Actions run: ${runUrl}`,
+              '',
+              '### Fix locally',
+              '```powershell',
+              '.\\bin\\checkver.ps1 <app>',
+              '```'
+            ].join('\n');
+
+            if (issues.length > 0) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                body
+              });
+              console.log(`Updated issue #${issues[0].number}`);
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '⚠️ Checkver health check failed',
+                labels: [label],
+                body
+              });
+              console.log('Created checkver-failure issue');
+            }
