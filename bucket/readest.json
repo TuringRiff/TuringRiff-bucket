@@ -21,7 +21,7 @@
         "script": [
             "Remove-Item \"$dir\\`$PLUGINSDIR\" -Force -Recurse -ErrorAction SilentlyContinue",
             "if (Test-Path \"$dir\\`$TEMP\") { Rename-Item -Path \"$dir\\`$TEMP\" -NewName \"redist\" }",
-            ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+            ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
             "New-PersistDirectory \"$env:APPDATA\\com.bilingify.readest\" \"$persist_dir\\Roaming\" -Migrate",
             "New-PersistDirectory \"$env:LOCALAPPDATA\\com.bilingify.readest\" \"$persist_dir\\Local\" -Migrate"
         ]
@@ -34,7 +34,7 @@
     ],
     "pre_uninstall": [
         "$bucket = $install.bucket",
-        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
         "Remove-Junction \"$env:APPDATA\\com.bilingify.readest\"",
         "Remove-Junction \"$env:LOCALAPPDATA\\com.bilingify.readest\""
     ],

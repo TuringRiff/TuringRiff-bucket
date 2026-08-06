@@ -7,7 +7,7 @@
     "hash": "f89c30c2d076d22870eceee79672d9ed0f5742f994c624a9bb1a7dd61bea1e8d",
     "installer": {
         "script": [
-            ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+            ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
             "New-PersistDirectory \"$env:LOCALAPPDATA\\Catime\" \"$persist_dir\\LocalAppData\" -Migrate"
         ]
     },
@@ -20,7 +20,7 @@
     ],
     "pre_uninstall": [
         "$bucket = $install.bucket",
-        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
         "Remove-Junction \"$env:LOCALAPPDATA\\Catime\""
     ],
     "checkver": "github",

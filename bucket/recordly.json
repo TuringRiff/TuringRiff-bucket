@@ -13,7 +13,7 @@
         "script": [
             "Expand-7zipArchive \"$dir\\`$PLUGINSDIR\\app-64.7z\" \"$dir\"",
             "Remove-Item \"$dir\\`$*\", \"$dir\\resources\\app-update.yml\" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null",
-            ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+            ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
             "New-PersistDirectory \"$env:APPDATA\\Recordly\" \"$persist_dir\\AppData\" -Migrate"
         ]
     },
@@ -25,7 +25,7 @@
     ],
     "pre_uninstall": [
         "$bucket = $install.bucket",
-        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
         "Remove-Junction \"$env:APPDATA\\Recordly\"",
         "Remove-Item \"$env:LocalAppData\\recordly-updater\" -Force -Recurse -ErrorAction SilentlyContinue | Out-Null"
     ],

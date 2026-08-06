@@ -11,7 +11,7 @@
     },
     "installer": {
         "script": [
-            ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+            ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
             "New-PersistDirectory \"$env:APPDATA\\com.ifreedomer\\flix\" \"$persist_dir\\AppData\" -Migrate"
         ]
     },
@@ -24,7 +24,7 @@
     ],
     "pre_uninstall": [
         "$bucket = $install.bucket",
-        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
         "Remove-Junction \"$env:APPDATA\\com.ifreedomer\\flix\"",
         "Remove-EmptyDirectory \"$env:APPDATA\\com.ifreedomer\""
     ],

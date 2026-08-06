@@ -12,7 +12,7 @@
     "extract_dir": "PiliNara-Win",
     "installer": {
         "script": [
-            ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+            ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
             "New-PersistDirectory \"$env:APPDATA\\com.example\\PiliNara\" \"$persist_dir\\AppData\" -Migrate",
             "New-PersistDirectory \"$env:LOCALAPPDATA\\com.example\\PiliNara\" \"$persist_dir\\LocalAppData\" -Migrate"
         ]
@@ -25,7 +25,7 @@
     ],
     "pre_uninstall": [
         "$bucket = $install.bucket",
-        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
+        ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
         "Remove-Junction \"$env:APPDATA\\com.example\\PiliNara\"",
         "Remove-Junction \"$env:LOCALAPPDATA\\com.example\\PiliNara\"",
         "Remove-EmptyDirectory \"$env:APPDATA\\com.example\"",
