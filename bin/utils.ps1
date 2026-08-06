@@ -75,28 +75,3 @@ function Remove-EmptyDirectory {
     }
 }
 
-function Stop-App {
-    param(
-        [Parameter(Position = 0, ValueFromPipeline, HelpMessage = "Array of paths to search for executables")]
-        [string[]]
-        $Path
-    )
-
-    # Use default paths if none provided
-    if (-not $Path) {
-        $Path = @($dir, (Split-Path $dir -Parent) + '\current')
-    }
-
-    # Get all processes into memory for performance
-    $allProcesses = Get-Process
-
-    foreach ($app_dir in $Path) {
-        $allProcesses | Where-Object {
-            # Wrap in try/catch: accessing .Modules throws Access Denied for system processes
-            try { $_.Modules.FileName -like "$app_dir\*" } catch { $false }
-        } | ForEach-Object {
-            Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue
-            Wait-Process -Id $_.Id -ErrorAction SilentlyContinue -Timeout 30
-        }
-    }
-}

@@ -27,11 +27,6 @@
         "    Set-Content -Path \"$dir\\TrafficHistory.json\" -Value '[]'",
         "}"
     ],
-    "pre_uninstall": [
-        "$bucket = $install.bucket",
-        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
-        "Stop-App"
-    ],
     "bin": "LiteMonitor.exe",
     "shortcuts": [
         [

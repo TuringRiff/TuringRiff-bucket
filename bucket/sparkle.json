@@ -19,11 +19,6 @@
         }
     },
     "pre_install": "if (!(Test-Path \"$dir\\PORTABLE\")) { New-Item -ItemType File -Path \"$dir\\PORTABLE\" -Force | Out-Null }",
-    "pre_uninstall": [
-        "$bucket = $install.bucket",
-        ". \"$bucketsdir\\$bucket\\bin\\utils.ps1\"",
-        "Stop-App"
-    ],
     "shortcuts": [
         [
             "Sparkle.exe",
