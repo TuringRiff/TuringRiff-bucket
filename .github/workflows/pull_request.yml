@@ -3,6 +3,8 @@ name: Pull Requests
 on:
   pull_request:
     types: [opened]
+    paths:
+      - 'bucket/**'
   issue_comment:
     types: [created]
 
