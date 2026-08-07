@@ -1,0 +1,51 @@
+{
+    "version": "12.22.8",
+    "description": "Complete API development environment.",
+    "homepage": "https://www.getpostman.com/",
+    "license": {
+        "identifier": "Freeware",
+        "url": "https://www.getpostman.com/licenses/postman_eula"
+    },
+    "architecture": {
+        "64bit": {
+            "url": "https://dl.pstmn.io/download/12.22.8/Postman%20v12.22.8%20(x64).exe#/dl.7z",
+            "hash": "sha1:671126562094D00A3BAA1F6A55F1BAF417CC4C37"
+        }
+    },
+    "installer": {
+        "script": [
+            "Expand-7zipArchive \"$dir\\Postman-$version-full.nupkg\" \"$dir\\app\" -ExtractDir 'lib\\net45' -Removal",
+            "'background.gif', 'RELEASES', 'setupIcon.ico', 'Update.exe' | ForEach-Object { Remove-Item \"$dir\\$_\" -Force -ErrorAction SilentlyContinue }",
+            "Remove-Item \"$dir\\app\\squirrel.exe\" -Force -ErrorAction SilentlyContinue",
+            ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
+            "New-PersistDirectory \"$env:APPDATA\\Postman\" \"$persist_dir\\AppData\" -Migrate"
+        ]
+    },
+    "shortcuts": [
+        [
+            "app/Postman.exe",
+            "Postman"
+        ]
+    ],
+    "pre_uninstall": [
+        "$bucket = $install.bucket",
+        ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
+        "Get-Process -Name 'Postman' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue",
+        "Remove-Junction \"$env:APPDATA\\Postman\""
+    ],
+    "checkver": {
+        "url": "https://dl.pstmn.io/changelog?channel=stable&platform=win64",
+        "jsonpath": "$.changelog[0].name"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://dl.pstmn.io/download/$version/Postman%20v$version%20(x64).exe#/dl.7z",
+                "hash": {
+                    "url": "https://dl.pstmn.io/RELEASES?platform=win64&from=$version",
+                    "regex": "(?sm)$basename.*?$sha1"
+                }
+            }
+        }
+    }
+}
