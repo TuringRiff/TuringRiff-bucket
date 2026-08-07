@@ -1,12 +1,12 @@
 {
-    "version": "2.1.0.1-Himeko",
+    "version": "2.1.0.2-beta4",
     "description": "A Flutter BiliBili desktop client forked from PiliPlus, with offline cache support",
     "homepage": "https://github.com/Starfallan/PiliNara",
     "license": "GPL-3.0-only",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/Starfallan/PiliNara/releases/download/2.1.0.1-Himeko/PiliNara_windows_2.1.0%2B5524_x64_portable.zip",
-            "hash": "8bb80b6120f205c751496bf241e790e8c092129a16a33525c19cdac6bd7bf4a9"
+            "url": "https://github.com/Starfallan/PiliNara/releases/download/2.1.0.2-beta4/PiliNara_windows_2.1.0%2B5624_x64_portable.zip",
+            "hash": "e89e9c6877a9142e5c38204dc9cc89f9feef85466f2e74e3aec56c054609922f"
         }
     },
     "extract_dir": "PiliNara-Win",
@@ -32,13 +32,20 @@
         "Remove-EmptyDirectory \"$env:LOCALAPPDATA\\com.example\""
     ],
     "checkver": {
-        "url": "https://api.github.com/repos/Starfallan/PiliNara/releases/latest",
-        "regex": "/download/(?<version>[^/]+)/PiliNara_windows_(?<flutter>[\\d.]+)%2B(?<build>\\d+)_x64_portable\\.zip"
+        "script": [
+            "$headers = @{ 'User-Agent' = 'Scoop' }",
+            "if ($env:SCOOP_GH_TOKEN) { $headers['Authorization'] = \"token $($env:SCOOP_GH_TOKEN)\" }",
+            "$releases = Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/Starfallan/PiliNara/releases?per_page=100'",
+            "$release = $releases | Where-Object { $_.assets | Where-Object { $_.name -like 'PiliNara_windows_*x64_portable.zip' } } | Select-Object -First 1",
+            "$asset = $release.assets | Where-Object { $_.name -like 'PiliNara_windows_*x64_portable.zip' } | Select-Object -First 1",
+            "Write-Output \"$($release.tag_name) $($asset.browser_download_url)\""
+        ],
+        "regex": "(?<version>[^\\s]+)\\s(?<url>[^\\s]+)"
     },
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "https://github.com/Starfallan/PiliNara/releases/download/$version/PiliNara_windows_$matchFlutter%2B$matchBuild_x64_portable.zip"
+                "url": "$matchUrl"
             }
         }
     }
