@@ -1,0 +1,40 @@
+{
+    "version": "2.0.9",
+    "description": "A ready-to-use, ready-to-go translation and OCR tool developed by WPF",
+    "homepage": "https://stranslate.zggsong.com",
+    "license": {
+        "identifier": "MIT",
+        "url": "https://github.com/STranslate/STranslate/blob/main/LICENSE"
+    },
+    "notes": [
+        "配置保存在应用目录的 PortableConfig，已由 Scoop 持久化，升级不会丢失。",
+        "此安装未包含官方便携版自带的 Velopack 自更新组件（Update.exe），应用内更新不可用；请在设置中关闭自动更新，统一使用 scoop update stranslate 更新。"
+    ],
+    "suggest": {
+        ".NET Desktop Runtime 10.0": "versions/windowsdesktop-runtime-10.0"
+    },
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/STranslate/STranslate/releases/download/v2.0.9/STranslate-win-Portable.zip",
+            "hash": "77535bbcecb029a669acdd855dbf12d9608575aab4d76fb66ad895c9b3ce66f8"
+        }
+    },
+    "extract_dir": "current",
+    "shortcuts": [
+        [
+            "STranslate.exe",
+            "STranslate"
+        ]
+    ],
+    "persist": "PortableConfig",
+    "checkver": {
+        "github": "https://github.com/STranslate/STranslate"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/STranslate/STranslate/releases/download/v$version/STranslate-win-Portable.zip"
+            }
+        }
+    }
+}
