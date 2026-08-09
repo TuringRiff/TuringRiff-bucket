@@ -27,16 +27,10 @@
         "# Tools 整目录持久化，新包中的 Tools.original 不保留。",
         "if (Test-Path \"$dir\\Tools.original\") { Remove-Item \"$dir\\Tools.original\" -Recurse -Force }"
     ],
-    "bin": [
-        [
-            "Zen\\zen.exe",
-            "RunningCheese Zen"
-        ]
-    ],
     "shortcuts": [
         [
             "Zen\\zen.exe",
-            "RunningCheese Zen"
+            "Zen"
         ]
     ],
     "persist": [
