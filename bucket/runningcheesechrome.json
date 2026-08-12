@@ -1,11 +1,11 @@
 {
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "RunningCheese Chrome 定制版便携浏览器",
     "homepage": "https://www.runningcheese.com/chrome",
     "license": "Freeware",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/TuringRiff/browser-pkg-test/releases/download/v1.3.0/RunningCheeseChrome.7z",
+            "url": "https://github.com/TuringRiff/browser-pkg-test/releases/download/v1.4.0/RunningCheeseChrome.7z",
             "hash": "d1fc1c797d4f6a2332eaca5d1808d6b20e67aa0823ad0caf8c29f5639c2f45cd"
         }
     },
