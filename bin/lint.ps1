@@ -1,5 +1,29 @@
 #Requires -Version 5.1
 
+# Returns the text that carries a required field's meaning, or $null when the
+# field has a type the manifest schema does not allow there.
+#
+# 'license' may be an SPDX string or an object whose 'identifier' is required.
+# The object form must be unwrapped before any emptiness test: ConvertFrom-Json
+# yields a PSCustomObject, and casting one to string produces "@{identifier=}",
+# which is never empty. Testing that directly passes every object unconditionally.
+function Resolve-FieldText {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object] $Value
+    )
+
+    if ($Value -is [string]) { return $Value }
+    if ($Value -is [System.Management.Automation.PSCustomObject] -and
+        ($Value.PSObject.Properties.Name -contains 'identifier')) {
+        $identifier = $Value.identifier
+        if ($identifier -is [string]) { return $identifier }
+    }
+
+    return $null
+}
+
 $bucketDir = "$PSScriptRoot/../bucket"
 $manifests = Get-ChildItem -Path $bucketDir -Filter *.json
 
@@ -41,11 +65,25 @@ foreach ($file in $manifests) {
             }
         }
 
-        # 3. Check required fields
-        $requiredFields = @("version", "description", "homepage", "license")
-        foreach ($field in $requiredFields) {
-            if ([string]::IsNullOrWhiteSpace($json.$field)) {
-                $errors.Add("Missing or empty required field: '$field'")
+        # 3. Check required fields, paired with what the schema accepts there
+        $requiredFields = [ordered]@{
+            version     = "a string"
+            description = "a string"
+            homepage    = "a string"
+            license     = "a string, or an object with an 'identifier'"
+        }
+        foreach ($field in $requiredFields.Keys) {
+            $raw = $json.$field
+            if ($null -eq $raw) {
+                $errors.Add("Missing required field: '$field'")
+                continue
+            }
+
+            $text = Resolve-FieldText -Value $raw
+            if ($null -eq $text) {
+                $errors.Add("Required field '$field' must be $($requiredFields[$field]); got '$($raw.GetType().Name)'")
+            } elseif ([string]::IsNullOrWhiteSpace($text)) {
+                $errors.Add("Empty required field: '$field'")
             }
         }
 
