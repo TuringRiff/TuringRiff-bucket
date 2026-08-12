@@ -32,7 +32,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SCOOP_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          .\bin\checkver-health.ps1 -Dir .\bucket -SummaryPath .\checkver-health-summary.md
+          # -IgnoreDrift: drift is owned by Excavator's detect-outdated job
+          # (manifest-outdated label). This job runs 3h10m after the 00:20 UTC
+          # Excavator run, so any upstream release in that window is pending —
+          # not a fault. Only checkver errors and dead URLs fail this check.
+          .\bin\checkver-health.ps1 -Dir .\bucket -SummaryPath .\checkver-health-summary.md -IgnoreDrift
 
       - name: Upload health summary
         if: always()

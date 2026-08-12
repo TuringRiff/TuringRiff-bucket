@@ -27,6 +27,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SKIP_UPDATED: 1
           # Do NOT set THROW_ERROR=1: one bad app would block updates for the whole bucket.
+      # Safe to close every excavator-failure issue only because this job is the
+      # sole creator of that label. Other jobs must use their own label.
       - name: Close Resolved Failure Issues
         if: success()
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
@@ -217,31 +219,101 @@ jobs:
               console.log('Created manifest-outdated issue');
             }
 
-      - name: Report detect step failure
-        if: always() && steps.detect.outcome == 'failure'
+      # Uses its own label, not excavator-failure: the excavate job unconditionally
+      # closes every excavator-failure issue on success, so sharing the label made
+      # a persistently broken detect step churn a brand-new issue every run.
+      - name: Manage detect-failure issues
+        if: always() && steps.detect.outcome != 'skipped'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          DETECT_OUTCOME: ${{ steps.detect.outcome }}
         with:
           script: |
+            const label = 'detect-failure';
+            const failed = process.env.DETECT_OUTCOME === 'failure';
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: label
+              });
+            } catch {
+              try {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label,
+                  color: 'B60205',
+                  description: 'detect-outdated job could not verify manifest drift'
+                });
+              } catch (e) {
+                console.log('createLabel skipped:', e.message);
+              }
+            }
+
             const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
-              labels: 'excavator-failure'
+              labels: label
             });
+
+            if (!failed) {
+              for (const issue of issues) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `Resolved: detect-outdated completed successfully.\n\nRun: ${runUrl}`
+                });
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  state: 'closed',
+                  state_reason: 'completed'
+                });
+                console.log(`Closed resolved issue #${issue.number}`);
+              }
+              return;
+            }
+
+            const body = [
+              'The **detect-outdated** job failed, so residual manifest drift could not be verified.',
+              '',
+              'While this is failing, `manifest-outdated` issues are not being opened or closed — treat the bucket drift state as unknown.',
+              '',
+              `Actions run: ${runUrl}`,
+              '',
+              '### Reproduce locally',
+              '```powershell',
+              '.\\bin\\detect-outdated.ps1 -Dir .\\bucket',
+              '```'
+            ].join('\n');
+
             if (issues.length > 0) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                body
+              });
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issues[0].number,
-                body: `detect-outdated job failed.\n\n${runUrl}`
+                body: `Still failing after run ${runUrl}`
               });
-              return;
+              console.log(`Updated issue #${issues[0].number}`);
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🚨 detect-outdated job failed',
+                labels: [label],
+                body
+              });
+              console.log('Created detect-failure issue');
             }
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '🚨 Excavator Auto-Update Workflow Failed',
-              labels: ['excavator-failure'],
-              body: `The **detect-outdated** job failed (could not verify residual manifest drift).\n\n${runUrl}`
-            });
