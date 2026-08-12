@@ -1,7 +1,13 @@
 version: 2
 updates:
   - package-ecosystem: github-actions
-    directory: /
+    # "/" only covers .github/workflows. Composite actions under
+    # .github/actions are silently skipped, so their pinned dependencies
+    # (actions/cache in setup-scoop) never get update PRs. The "**/*" glob
+    # recurses; a bare "*" would only reach one level down.
+    directories:
+      - /
+      - /.github/actions/**/*
     schedule:
       interval: weekly
       day: monday
