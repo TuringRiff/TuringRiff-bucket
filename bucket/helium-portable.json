@@ -1,5 +1,5 @@
 {
-    "version": "0.15.4.1",
+    "version": "0.15.5.1",
     "description": "Portable build of Helium, a privacy-focused Chromium fork, bundled with the Chrome++ portability layer",
     "homepage": "https://github.com/TuringRiff/Helium_Portable",
     "license": "GPL-3.0-only",
@@ -12,8 +12,8 @@
     ],
     "architecture": {
         "64bit": {
-            "url": "https://github.com/TuringRiff/Helium_Portable/releases/download/v0.15.4.1/Helium_0.15.4.1.7z",
-            "hash": "375c3f634d1bb93b352082b27e01267af249c673ac6e561a2febffdeaa5f4576"
+            "url": "https://github.com/TuringRiff/Helium_Portable/releases/download/v0.15.5.1/Helium_0.15.5.1.7z",
+            "hash": "09ac5c69a01d2f5997a294437aa53bfe3323bcc9a613e081d78cc4fde3fd259a"
         }
     },
     "pre_install": [
