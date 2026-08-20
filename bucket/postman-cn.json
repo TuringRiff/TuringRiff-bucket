@@ -1,5 +1,5 @@
 {
-    "version": "12.24.2",
+    "version": "12.24.4",
     "description": "Postman 中文注入版 - Complete API development environment with Chinese UI (postman-chinese-injector)",
     "homepage": "https://github.com/hlmd/postman-chinese-injector",
     "license": {
@@ -13,11 +13,11 @@
     "architecture": {
         "64bit": {
             "url": [
-                "https://dl.pstmn.io/download/12.24.2/Postman%20v12.24.2%20(x64).exe#/dl.7z",
+                "https://dl.pstmn.io/download/12.24.4/Postman%20v12.24.4%20(x64).exe#/dl.7z",
                 "https://github.com/hlmd/postman-chinese-injector/releases/download/v1.5.2/postman-chinese-injector-win-x64.zip"
             ],
             "hash": [
-                "sha1:8ec0176dc2f7106524bee72a790d622d4700efe0",
+                "sha1:716adfffe3f43c56f298253630b58932e2b815e6",
                 "166b5793658340417b2d71bbd548dfc78454f4932813d5451f000399781bf780"
             ]
         }
