@@ -1,5 +1,5 @@
 {
-    "version": "1.2.51",
+    "version": "1.2.52",
     "description": "External launcher and manager for the OpenAI Codex / ChatGPT desktop app, with provider switching and UI enhancements via CDP (does not modify official app files).",
     "homepage": "https://github.com/BigPizzaV3/CodexPlusPlus",
     "license": "AGPL-3.0-only",
@@ -11,8 +11,8 @@
     ],
     "architecture": {
         "64bit": {
-            "url": "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v1.2.51/CodexPlusPlus-1.2.51-windows-x64.zip",
-            "hash": "cd47fc29114c6ef7876380ff364a437e461eef44316bc04903ddbd9ab5c84393"
+            "url": "https://github.com/BigPizzaV3/CodexPlusPlus/releases/download/v1.2.52/CodexPlusPlus-1.2.52-windows-x64.zip",
+            "hash": "bdb741b6b53cc888a66b8a8e529fdd50bd23e2e5c23bc85d4843f8ada2b5d8ad"
         }
     },
     "bin": [
