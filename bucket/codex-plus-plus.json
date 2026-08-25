@@ -15,10 +15,6 @@
             "hash": "2303ca98d356ccbd39d94ae32689c35c0d6729abde8130635c480ccbc2cdcd20"
         }
     },
-    "bin": [
-        "codex-plus-plus.exe",
-        "codex-plus-plus-manager.exe"
-    ],
     "shortcuts": [
         [
             "codex-plus-plus.exe",

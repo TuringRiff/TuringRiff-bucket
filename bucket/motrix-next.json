@@ -23,7 +23,6 @@
         ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
         "New-PersistDirectory \"$env:APPDATA\\com.motrix.next\" \"$persist_dir\\AppData\" -Migrate"
     ],
-    "bin": "motrix-next.exe",
     "shortcuts": [
         [
             "motrix-next.exe",

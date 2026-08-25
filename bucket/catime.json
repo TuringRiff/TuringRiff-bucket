@@ -11,7 +11,6 @@
             "New-PersistDirectory \"$env:LOCALAPPDATA\\Catime\" \"$persist_dir\\LocalAppData\" -Migrate"
         ]
     },
-    "bin": "catime.exe",
     "shortcuts": [
         [
             "catime.exe",

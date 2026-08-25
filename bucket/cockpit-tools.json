@@ -14,7 +14,6 @@
         }
     },
     "extract_dir": "PFiles\\Cockpit Tools",
-    "bin": "cockpit-tools.exe",
     "shortcuts": [
         [
             "cockpit-tools.exe",

@@ -24,7 +24,6 @@
         "    Set-Content -Path \"$dir\\TrafficHistory.json\" -Value '[]'",
         "}"
     ],
-    "bin": "LiteMonitor.exe",
     "shortcuts": [
         [
             "LiteMonitor.exe",
