@@ -26,8 +26,8 @@
     ],
     "post_install": [
         "'_lang', '_themes' | ForEach-Object {",
-        "    if (Test-Path \"$dir\\$_.original\") {",
-        "        Copy-Item \"$dir\\$_.original\\*\" \"$dir\\$_\" -Recurse -Force",
+        "    if (Test-Path \"$dir\\$_.original\" -PathType Container) {",
+        "        Copy-Item \"$dir\\$_.original\\*\" \"$persist_dir\\$_\" -Recurse -Force",
         "    }",
         "}"
     ],
