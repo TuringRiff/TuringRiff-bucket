@@ -1,0 +1,73 @@
+{
+    "version": "26.08r6282",
+    "description": "Lightweight Scintilla-based text editor for Windows (HD Simplified Chinese build)",
+    "homepage": "https://github.com/zufuliu/notepad4",
+    "license": "BSD-3-Clause",
+    "notes": "On x64 Windows, the AVX2-optimized build is installed and requires an AVX2-capable CPU. On Windows ARM64, the native ARM64 build is installed.",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/zufuliu/notepad4/releases/download/v26.08r6282/Notepad4_HD_zh-Hans_AVX2_v26.08r6282.zip",
+            "hash": "c599ccad10841ae08c6c0f9f7f85416e55394ea4fefdace5a6b40b45b8d280de"
+        },
+        "arm64": {
+            "url": "https://github.com/zufuliu/notepad4/releases/download/v26.08r6282/Notepad4_HD_zh-Hans_ARM64_v26.08r6282.zip",
+            "hash": "51f6491b5703e7e40d5343432cb3d1a08d0baa57c9c82a1cc4fcbe624b967c9d"
+        }
+    },
+    "pre_install": [
+        "'Notepad4.ini', 'matepath.ini', 'Notepad4 DarkTheme.ini' | ForEach-Object {",
+        "    $persistPath = Join-Path $persist_dir $_",
+        "    $defaultPath = Join-Path $dir \"$_-default\"",
+        "    $targetPath = Join-Path $dir $_",
+        "    if (Test-Path -LiteralPath $persistPath -PathType Container) {",
+        "        $items = @(Get-ChildItem -LiteralPath $persistPath -Force)",
+        "        if ($items.Count -eq 0) {",
+        "            Remove-Item -LiteralPath $persistPath -Force",
+        "        } else {",
+        "            abort \"Cannot migrate '$persistPath': expected a file but found a non-empty directory.\"",
+        "        }",
+        "    }",
+        "    if (-not (Test-Path -LiteralPath $persistPath -PathType Leaf)) {",
+        "        if (-not (Test-Path -LiteralPath $defaultPath -PathType Leaf)) {",
+        "            abort \"Required default configuration file '$defaultPath' is missing.\"",
+        "        }",
+        "        Copy-Item -LiteralPath $defaultPath -Destination $targetPath",
+        "    }",
+        "}"
+    ],
+    "bin": [
+            "Notepad4.exe",
+            [ "Notepad4.exe", "notepad4" ],
+            "matepath.exe"
+        ],
+    "shortcuts": [
+        [
+            "Notepad4.exe",
+            "Notepad4"
+        ],
+        [
+            "matepath.exe",
+            "matepath"
+        ]
+    ],
+    "persist": [
+        "Notepad4.ini",
+        "matepath.ini",
+        "Notepad4 DarkTheme.ini"
+    ],
+    "checkver": {
+        "url": "https://api.github.com/repos/zufuliu/notepad4/releases/latest",
+        "jsonpath": "$.tag_name",
+        "regex": "^v([\\d.]+r\\d+)$"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/zufuliu/notepad4/releases/download/v$version/Notepad4_HD_zh-Hans_AVX2_v$version.zip"
+            },
+            "arm64": {
+                "url": "https://github.com/zufuliu/notepad4/releases/download/v$version/Notepad4_HD_zh-Hans_ARM64_v$version.zip"
+            }
+        }
+    }
+}
