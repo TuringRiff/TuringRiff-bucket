@@ -1,12 +1,12 @@
 {
-    "version": "6.12.1",
+    "version": "6.12.5",
     "description": "Video player tailored for English learners",
     "homepage": "https://github.com/solidSpoon/DashPlayer",
     "license": "MIT",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/solidSpoon/DashPlayer/releases/download/v6.12.1/DashPlayer-6.12.1.setup.exe",
-            "hash": "b65549e1aa274cbe0ac1212fe194b46102c05817eaa93a2bdd9a6501170c48b9"
+            "url": "https://github.com/solidSpoon/DashPlayer/releases/download/v6.12.5/DashPlayer-6.12.5.setup.exe",
+            "hash": "8815a762b004688f32ed7191b6f33f4f2b86870f8115ac0808f945adfb1799ce"
         }
     },
     "installer": {
