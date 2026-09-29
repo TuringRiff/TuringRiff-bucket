@@ -1,12 +1,13 @@
 {
     "version": "3.9.9",
-    "description": "A full-featured download manager — rebuilt from the ground up.",
-    "homepage": "https://motrix-next.pages.dev",
+    "description": "A full-featured download manager — rebuilt from the ground up (deprecated, superseded by Rayburst)",
+    "homepage": "https://rayburst.pages.dev",
     "license": "MIT",
     "notes": [
+        "⚠️ Motrix Next 自 v4.0.0 起已正式更名为 Rayburst，本项目已停止更新。",
+        "由于上游底层架构与配置格式变动，历史配置与任务无法自动迁移，请运行 'scoop install rayburst' 重新安装配置。",
         "Scoop 直接解包 NSIS 安装程序，因此不会注册 magnet://、ed2k://、thunder:// 深链接和 .torrent 文件关联；需要这些功能请使用官方安装包。",
-        "应用数据目录（%APPDATA%\\com.motrix.next）已链接到 Scoop 持久化目录，升级不会丢失配置、下载历史与任务恢复缓存；卸载（不带 -p）时数据仍保留在持久化目录。",
-        "应用内置自动更新会直接替换文件，可能与 Scoop 管理冲突，建议在“设置→常规”中关闭自动更新，统一使用 scoop update motrix-next 更新。"
+        "应用数据目录（%APPDATA%\\com.motrix.next）已链接到 Scoop 持久化目录，升级不会丢失配置、下载历史与任务恢复缓存；卸载（不带 -p）时数据仍保留在持久化目录。"
     ],
     "architecture": {
         "64bit": {
@@ -34,18 +35,5 @@
         ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
         "Get-Process -Name 'motrix-next','motrix-next-engine' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue",
         "Remove-Junction \"$env:APPDATA\\com.motrix.next\""
-    ],
-    "checkver": {
-        "github": "https://github.com/AnInsomniacy/motrix-next"
-    },
-    "autoupdate": {
-        "architecture": {
-            "64bit": {
-                "url": "https://github.com/AnInsomniacy/motrix-next/releases/download/v$version/MotrixNext_$version_x64-setup.exe#/dl.7z"
-            },
-            "arm64": {
-                "url": "https://github.com/AnInsomniacy/motrix-next/releases/download/v$version/MotrixNext_$version_arm64-setup.exe#/dl.7z"
-            }
-        }
-    }
+    ]
 }
