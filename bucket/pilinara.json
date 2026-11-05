@@ -32,18 +32,21 @@
     "checkver": {
         "script": [
             "$headers = @{ 'User-Agent' = 'Scoop' }",
-            "if ($env:SCOOP_GH_TOKEN) { $headers['Authorization'] = \"Bearer $env:SCOOP_GH_TOKEN\" }",
+            "$token = if (Get-Command Get-GitHubToken -ErrorAction SilentlyContinue) { Get-GitHubToken }",
+            "if (!$token) { $token = if ($env:SCOOP_GH_TOKEN) { $env:SCOOP_GH_TOKEN } elseif ($env:GH_TOKEN) { $env:GH_TOKEN } else { $env:GITHUB_TOKEN } }",
+            "if ($token) { $headers['Authorization'] = \"Bearer $token\" }",
             "$releases = Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/Starfallan/PiliNara/releases?per_page=100'",
-            "$release = $releases | Where-Object { $_.assets | Where-Object { $_.name -like 'PiliNara_windows_*x64_portable.zip' } } | Select-Object -First 1",
+            "$release = $releases | Where-Object { $_.assets.name -like 'PiliNara_windows_*x64_portable.zip' } | Select-Object -First 1",
+            "if (!$release) { throw 'No PiliNara x64 portable asset found in recent releases.' }",
             "$asset = $release.assets | Where-Object { $_.name -like 'PiliNara_windows_*x64_portable.zip' } | Select-Object -First 1",
             "Write-Output \"$($release.tag_name) $($asset.browser_download_url)\""
         ],
-        "regex": "(?<version>[^\\s]+)\\s(?<url>[^\\s]+)"
+        "regex": "(?<version>[^\\s]+)\\shttps://github\\.com/Starfallan/PiliNara/releases/download/[^/]+/(?<asset>[^\\s]+)"
     },
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "$matchUrl"
+                "url": "https://github.com/Starfallan/PiliNara/releases/download/$version/$matchAsset"
             }
         }
     }

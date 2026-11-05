@@ -1,9 +1,13 @@
 {
+    "##": "Upstream also ships a non-AVX2 archive (Notepad4_HD_zh-Hans_v<version>.zip) and plain builds; this manifest stays on the AVX2 build for x64 and the native ARM64 build for Windows on ARM.",
     "version": "26.10r6392",
     "description": "Lightweight Scintilla-based text editor for Windows (HD Simplified Chinese build)",
     "homepage": "https://github.com/zufuliu/notepad4",
     "license": "BSD-3-Clause",
-    "notes": "On x64 Windows, the AVX2-optimized build is installed and requires an AVX2-capable CPU. On Windows ARM64, the native ARM64 build is installed.",
+    "notes": [
+        "On x64 Windows the AVX2-optimized build is installed and requires an AVX2-capable CPU.",
+        "On Windows on ARM the native ARM64 build is installed."
+    ],
     "architecture": {
         "64bit": {
             "url": "https://github.com/zufuliu/notepad4/releases/download/v26.10r6392/Notepad4_HD_zh-Hans_AVX2_v26.10r6392.zip",
@@ -37,10 +41,6 @@
     ],
     "bin": [
         "Notepad4.exe",
-        [
-            "Notepad4.exe",
-            "notepad4"
-        ],
         "matepath.exe"
     ],
     "shortcuts": [
