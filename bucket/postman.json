@@ -1,5 +1,5 @@
 {
-    "version": "12.35.4",
+    "version": "12.35.5",
     "description": "Complete API development environment.",
     "homepage": "https://www.getpostman.com/",
     "license": {
@@ -8,8 +8,8 @@
     },
     "architecture": {
         "64bit": {
-            "url": "https://dl.pstmn.io/download/12.35.4/Postman%20v12.35.4%20(x64).exe#/dl.7z",
-            "hash": "sha1:b424c4d2406dc99d9bdc86be17f05891f3ef3d0d"
+            "url": "https://dl.pstmn.io/download/12.35.5/Postman%20v12.35.5%20(x64).exe#/dl.7z",
+            "hash": "sha1:023a8bce3c79720fdcc20cf8a7993499d066b790"
         }
     },
     "installer": {
