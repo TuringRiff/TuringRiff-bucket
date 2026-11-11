@@ -3,6 +3,7 @@
     "description": "Modern Windows system cleaning tool built with WinUI 3 and Fluent Design",
     "homepage": "https://github.com/builtbybel/FluentCleaner",
     "license": "MIT",
+    "notes": "FluentCleaner requires the exact Windows App SDK 2.0.1 runtime; newer or older builds abort with 'Unknown Hard Error'. Install it from https://aka.ms/windowsappsdk/2.0/2.0.1/windowsappruntimeinstall-x64.exe and reboot afterwards. Settings, the 'Custom' cleaners folder and Winapp3.ini are kept in the app folder and survive updates. Silent cleanup: 'FCleaner /AUTO' (log: %APPDATA%\\FluentCleaner\\auto.log).",
     "architecture": {
         "64bit": {
             "url": "https://github.com/builtbybel/FluentCleaner/releases/download/26.09.01/FluentCleaner-win-x64.zip",
@@ -11,18 +12,32 @@
     },
     "extract_dir": "FluentCleaner-win-x64",
     "pre_install": [
-        "if (!(Test-Path \"$dir\\settings.json\") -or !(Get-Item \"$dir\\settings.json\").Length) {",
+        "# Older installs (winget, or scoops without persist) keep settings in %APPDATA%; seed the portable file from there",
+        "if ((Test-Path \"$env:APPDATA\\FluentCleaner\\settings.json\") -and -not (Test-Path \"$persist_dir\\settings.json\")) {",
+        "    info \"Migrating settings from '$env:APPDATA\\FluentCleaner\\settings.json' to '$dir\\settings.json'\"",
+        "    Copy-Item \"$env:APPDATA\\FluentCleaner\\settings.json\" \"$dir\\settings.json\" -Force",
+        "}",
+        "# Scoop's persist turns a missing path into a directory, so these files must exist before persist runs",
+        "if ((-not (Test-Path \"$persist_dir\\settings.json\")) -and (-not (Test-Path \"$dir\\settings.json\"))) {",
         "    New-Item \"$dir\\settings.json\" -ItemType File -Force | Out-Null",
         "    Set-Content -Path \"$dir\\settings.json\" -Value '{}'",
+        "}",
+        "if ((-not (Test-Path \"$persist_dir\\Winapp3.ini\")) -and (-not (Test-Path \"$dir\\Winapp3.ini\"))) {",
+        "    New-Item \"$dir\\Winapp3.ini\" -ItemType File -Force | Out-Null",
         "}"
     ],
+    "bin": "FCleaner.exe",
     "shortcuts": [
         [
             "FCleaner.exe",
             "FluentCleaner"
         ]
     ],
-    "persist": "settings.json",
+    "persist": [
+        "Custom",
+        "settings.json",
+        "Winapp3.ini"
+    ],
     "checkver": {
         "url": "https://api.github.com/repos/builtbybel/FluentCleaner/releases?per_page=100",
         "regex": "https://github\\.com/builtbybel/FluentCleaner/releases/download/(?<version>[\\d.]+)/FluentCleaner-win-x64\\.zip"
