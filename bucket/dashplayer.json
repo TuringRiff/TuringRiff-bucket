@@ -1,5 +1,4 @@
 {
-    "##": "Upstream's newest tags (6.19.x) carry no release assets at all, so a plain 'github' checkver resolves to a tag with nothing to download - releases/latest points at it too - and the manifest drifts forever. A url checkver against api.github.com would be anonymous and rate limited, so the script below queries the release list with a token and reports the newest non-prerelease release that carries this tag's own DashPlayer-<version>.Setup.exe. Like every checkver.script it must return rather than throw: an uncaught throw aborts the bucket-wide checkver run.",
     "version": "6.18.0",
     "description": "Video player tailored for English learners",
     "homepage": "https://github.com/solidSpoon/DashPlayer",
