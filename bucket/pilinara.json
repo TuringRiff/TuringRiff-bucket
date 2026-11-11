@@ -1,4 +1,5 @@
 {
+    "##": "The release asset name carries its own build version (e.g. PiliNara_windows_2.2.0+6231_x64_portable.zip) that does NOT track the release tag (2.6.2), so autoupdate cannot rebuild the filename from $version: checkver reports the real asset name and autoupdate reuses it as $matchAsset. This checkver must never throw - Scoop invokes checkver.script with no try/catch, so an uncaught throw aborts the entire bucket-wide checkver run, not just this app. Returning nothing instead makes checkver report this app as an error while every other manifest is still checked.",
     "version": "2.6.2",
     "description": "A Flutter BiliBili desktop client forked from PiliPlus, with offline cache support",
     "homepage": "https://github.com/Starfallan/PiliNara",
@@ -33,11 +34,10 @@
         "script": [
             "$headers = @{ 'User-Agent' = 'Scoop' }",
             "$token = if (Get-Command Get-GitHubToken -ErrorAction SilentlyContinue) { Get-GitHubToken }",
-            "if (!$token) { $token = if ($env:SCOOP_GH_TOKEN) { $env:SCOOP_GH_TOKEN } elseif ($env:GH_TOKEN) { $env:GH_TOKEN } else { $env:GITHUB_TOKEN } }",
             "if ($token) { $headers['Authorization'] = \"Bearer $token\" }",
-            "$releases = Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/Starfallan/PiliNara/releases?per_page=100'",
-            "$release = $releases | Where-Object { $_.assets.name -like 'PiliNara_windows_*x64_portable.zip' } | Select-Object -First 1",
-            "if (!$release) { throw 'No PiliNara x64 portable asset found in recent releases.' }",
+            "$releases = Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/Starfallan/PiliNara/releases?per_page=30'",
+            "$release = $releases | Where-Object { -not $_.draft -and $_.assets.name -like 'PiliNara_windows_*x64_portable.zip' } | Select-Object -First 1",
+            "if (-not $release) { return }",
             "$asset = $release.assets | Where-Object { $_.name -like 'PiliNara_windows_*x64_portable.zip' } | Select-Object -First 1",
             "Write-Output \"$($release.tag_name) $($asset.browser_download_url)\""
         ],

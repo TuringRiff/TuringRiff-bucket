@@ -78,6 +78,16 @@ function Get-ScoopHome {
 # which splits an error message away from the app name that prefixes it. The
 # orphaned half then matches no parser rule and is dropped, so the failing URL
 # never reaches the report.
+#
+# A single fragment can also carry several console lines, because checkver
+# writes some messages with an embedded newline (e.g. "<exception>`r`nURL ...
+# is not valid"). Such a fragment is split first. Appending it whole made the
+# app line multi-line, and the callers parse with "^(?<app>...):\s+(?<msg>.+)$"
+# where '.' does not match a newline, so the match failed and the entire record
+# was dropped: a broken app vanished from the drift report instead of being
+# reported. Only the newlines are split; the pieces are still concatenated
+# verbatim, so a token that checkver split across two Write-Host calls is never
+# altered.
 function ConvertTo-CheckverLines {
     param(
         [Parameter(Mandatory = $true)]
@@ -89,10 +99,13 @@ function ConvertTo-CheckverLines {
     $lines = [System.Collections.Generic.List[string]]::new()
     foreach ($fragment in $Fragments) {
         if ([string]::IsNullOrEmpty($fragment)) { continue }
-        if (($lines.Count -gt 0) -and ($fragment -notmatch '^\s*[\w*][\w.-]*:\s')) {
-            $lines[$lines.Count - 1] += $fragment
-        } else {
-            $lines.Add($fragment)
+        foreach ($piece in ($fragment -split "`r?`n")) {
+            if ([string]::IsNullOrEmpty($piece)) { continue }
+            if (($lines.Count -gt 0) -and ($piece -notmatch '^\s*[\w*][\w.-]*:\s')) {
+                $lines[$lines.Count - 1] += $piece
+            } else {
+                $lines.Add($piece)
+            }
         }
     }
 
