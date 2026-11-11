@@ -1,12 +1,13 @@
 {
-    "version": "6.17.0",
+    "##": "Upstream's newest tags (6.19.x) carry no release assets at all, so a plain 'github' checkver resolves to a tag with nothing to download - releases/latest points at it too - and the manifest drifts forever. A url checkver against api.github.com would be anonymous and rate limited, so the script below queries the release list with a token and reports the newest non-prerelease release that carries this tag's own DashPlayer-<version>.Setup.exe. Like every checkver.script it must return rather than throw: an uncaught throw aborts the bucket-wide checkver run.",
+    "version": "6.18.0",
     "description": "Video player tailored for English learners",
     "homepage": "https://github.com/solidSpoon/DashPlayer",
     "license": "MIT",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/solidSpoon/DashPlayer/releases/download/v6.17.0/DashPlayer-6.17.0.setup.exe",
-            "hash": "801caf2e93dae557631f8ce74f81572051466c827ae94448b52d497f843b5747"
+            "url": "https://github.com/solidSpoon/DashPlayer/releases/download/v6.18.0/DashPlayer-6.18.0.Setup.exe",
+            "hash": "17a50f701318dbb7e3fe8c960ad0c5357e9d3b17e35e62229425919fced92268"
         }
     },
     "installer": {
@@ -19,7 +20,7 @@
     },
     "shortcuts": [
         [
-            "dash-player.exe",
+            "dashplayer.exe",
             "DashPlayer"
         ]
     ],
@@ -28,12 +29,26 @@
         ". \"$bucketsdir\\$bucket\\scripts\\utils.ps1\"",
         "Remove-Junction \"$env:AppData\\DashPlayer\""
     ],
-    "checkver": "github",
+    "checkver": {
+        "script": [
+            "$headers = @{ 'User-Agent' = 'Scoop' }",
+            "$token = if (Get-Command Get-GitHubToken -ErrorAction SilentlyContinue) { Get-GitHubToken }",
+            "if ($token) { $headers['Authorization'] = \"Bearer $token\" }",
+            "$releases = Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/solidSpoon/DashPlayer/releases?per_page=100'",
+            "$release = $releases | Where-Object { -not $_.draft -and -not $_.prerelease -and $_.assets.name -contains \"DashPlayer-$($_.tag_name -replace '^v', '').Setup.exe\" } | Select-Object -First 1",
+            "if (-not $release) { return }",
+            "Write-Output ($release.tag_name -replace '^v', '')"
+        ]
+    },
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "https://github.com/solidSpoon/DashPlayer/releases/download/v$version/DashPlayer-$version.setup.exe"
+                "url": "https://github.com/solidSpoon/DashPlayer/releases/download/v$version/DashPlayer-$version.Setup.exe"
             }
+        },
+        "hash": {
+            "url": "https://api.github.com/repos/solidSpoon/DashPlayer/releases/tags/v$version",
+            "jsonpath": "$.assets[?(@.name=='DashPlayer-$version.Setup.exe')].digest"
         }
     }
 }
