@@ -23,13 +23,15 @@ scoop install TuringRiff-bucket/<app-name>
 
 ## Maintenance
 
-Manifests are kept up to date by [Excavator](.github/workflows/excavator.yml). Residual outdated manifests are tracked through `manifest-outdated` issues; hard failures use `excavator-failure`.
+Manifests are kept up to date by [Excavator](.github/workflows/excavator.yml). Manifests that stay behind upstream, or that `checkver` cannot check at all, are tracked by a `manifest-outdated` issue; hard workflow failures use `excavator-failure`.
 
 Local checks (requires Scoop):
 
 ```powershell
 .\bin\lint.ps1                  # validate manifest format
 .\bin\checkver.ps1 -SkipUpdated # should print nothing if all apps are current
+.\bin\detect-outdated.ps1       # same drift report the scheduled job uses
+.\bin\checkver-health.ps1       # checkver + live URL validation (set GITHUB_TOKEN to avoid rate limits)
 ```
 
 ## Contributing

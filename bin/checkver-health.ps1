@@ -28,7 +28,10 @@
     Bucket directory (default: ../bucket).
 
 .PARAMETER SummaryPath
-    Markdown report path (default: ../checkver-health-summary.md).
+    Markdown report path (default: checkver-health-summary.md in $env:TEMP).
+    The default deliberately avoids the repository root: a local run must not
+    leave an untracked, soon-stale report next to the manifests. CI always
+    passes -SummaryPath explicitly, so it still writes into the workspace.
 
 .PARAMETER IgnoreDrift
     Exit 0 when only drift is found; checkver errors still fail.
@@ -49,7 +52,10 @@ param(
     [ValidateScript( { Test-Path $_ -PathType Container })]
     [String] $Dir = (Join-Path $PSScriptRoot '..\bucket'),
 
-    [String] $SummaryPath = (Join-Path $PSScriptRoot '..\checkver-health-summary.md'),
+    # Defaults to the temp directory, not the repo root: a local run used to drop
+    # an untracked, self-staling report beside the manifests. CI passes
+    # -SummaryPath explicitly and is unaffected.
+    [String] $SummaryPath = (Join-Path ([System.IO.Path]::GetTempPath()) 'checkver-health-summary.md'),
 
     [Switch] $IgnoreDrift,
     [Switch] $SkipUrlChecks

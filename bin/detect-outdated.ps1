@@ -14,6 +14,13 @@
 
 .PARAMETER FailOnOutdated
     Exit 1 when drift or errors are found.
+
+.OUTPUTS
+    GITHUB_OUTPUT keys: has_outdated, has_errors, outdated_count, error_count,
+    and has_drift (true when either kind is present).
+    has_outdated and has_errors are reported separately because they are
+    different faults: outdated means checkver worked but autoupdate did not land,
+    while errors means the app could not be checked at all.
 #>
 param(
     [ValidateScript({ Test-Path $_ -PathType Container })]
@@ -137,12 +144,31 @@ if ($outdated.Count -eq 0 -and $errors.Count -eq 0) {
             [void]$sb.AppendLine("- $err")
         }
         [void]$sb.AppendLine('')
+        [void]$sb.AppendLine('These apps produced no usable version at all, so their update state is unknown. Fixing `checkver` comes first: an update cannot be detected for an app that cannot be checked.')
+        [void]$sb.AppendLine('')
     }
+
+    # Outdated and broken are different failures with different fixes. Print only
+    # the commands that apply, so a broken checkver is not "repaired" by re-running
+    # autoupdate, which would just leave the manifest untouched again.
     [void]$sb.AppendLine('### Suggested fix')
     [void]$sb.AppendLine('')
-    [void]$sb.AppendLine('```powershell')
-    [void]$sb.AppendLine('.\bin\checkver.ps1 <app> -u')
-    [void]$sb.AppendLine('```')
+    if ($outdated.Count -gt 0) {
+        [void]$sb.AppendLine('For manifests that lag upstream (rewrite from upstream and refresh hashes):')
+        [void]$sb.AppendLine('')
+        [void]$sb.AppendLine('```powershell')
+        [void]$sb.AppendLine('.\bin\checkver.ps1 <app> -u')
+        [void]$sb.AppendLine('```')
+        [void]$sb.AppendLine('')
+    }
+    if ($errors.Count -gt 0) {
+        [void]$sb.AppendLine('For manifests whose checkver fails (inspect the error, do NOT use -u):')
+        [void]$sb.AppendLine('')
+        [void]$sb.AppendLine('```powershell')
+        [void]$sb.AppendLine('.\bin\checkver.ps1 <app> -ThrowError')
+        [void]$sb.AppendLine('```')
+        [void]$sb.AppendLine('')
+    }
 }
 
 $summary = $sb.ToString()
@@ -154,19 +180,29 @@ Set-Content -Path $SummaryPath -Value $summary -Encoding utf8
 Write-Host "Wrote summary: $SummaryPath" -ForegroundColor Green
 Write-Host $summary
 
-$hasDrift = ($outdated.Count -gt 0) -or ($errors.Count -gt 0)
+$hasOutdated = $outdated.Count -gt 0
+$hasErrors = $errors.Count -gt 0
 
 if ($env:GITHUB_OUTPUT) {
-    "has_drift=$($hasDrift.ToString().ToLowerInvariant())" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+    # has_outdated and has_errors stay separate on purpose. They are different
+    # faults: an outdated app needs an autoupdate fix, an erroring app needs its
+    # checkver fixed. A consumer that only looks at has_drift cannot tell them
+    # apart and ends up reporting every checkver error as an "autoupdate
+    # soft-fail", which points the maintainer at the wrong field.
+    # has_drift keeps its original meaning (either kind present) for callers
+    # outside this repository.
+    "has_outdated=$($hasOutdated.ToString().ToLowerInvariant())" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+    "has_errors=$($hasErrors.ToString().ToLowerInvariant())" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
     "outdated_count=$($outdated.Count)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
     "error_count=$($errors.Count)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+    "has_drift=$((($hasOutdated -or $hasErrors)).ToString().ToLowerInvariant())" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 }
 
 if ($env:GITHUB_STEP_SUMMARY) {
     Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary -Encoding utf8
 }
 
-if ($FailOnOutdated -and $hasDrift) {
+if ($FailOnOutdated -and ($hasOutdated -or $hasErrors)) {
     exit 1
 }
 

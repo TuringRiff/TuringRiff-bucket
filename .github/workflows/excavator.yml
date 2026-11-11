@@ -112,17 +112,28 @@ jobs:
           path: outdated-summary.md
           if-no-files-found: ignore
 
+      # One issue, but for two distinct faults: manifests that lag upstream and
+      # manifests whose checkver could not produce a version at all. Reporting
+      # both under a single "autoupdate soft-fail" title pointed maintainers at
+      # autoupdate.url even when the real defect was in checkver, so the title,
+      # the intro, and the fix hints are now derived from which kinds are present.
       - name: Manage manifest-outdated issues
         if: always() && steps.detect.outcome == 'success'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
-          HAS_DRIFT: ${{ steps.detect.outputs.has_drift }}
+          HAS_OUTDATED: ${{ steps.detect.outputs.has_outdated }}
+          HAS_ERRORS: ${{ steps.detect.outputs.has_errors }}
+          OUTDATED_COUNT: ${{ steps.detect.outputs.outdated_count }}
+          ERROR_COUNT: ${{ steps.detect.outputs.error_count }}
         with:
           script: |
             const fs = require('fs');
             const label = 'manifest-outdated';
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const hasDrift = (process.env.HAS_DRIFT || '').toLowerCase() === 'true';
+            const hasOutdated = (process.env.HAS_OUTDATED || '').toLowerCase() === 'true';
+            const hasErrors = (process.env.HAS_ERRORS || '').toLowerCase() === 'true';
+            const outdatedCount = process.env.OUTDATED_COUNT || '?';
+            const errorCount = process.env.ERROR_COUNT || '?';
 
             let summary = '';
             try {
@@ -158,13 +169,13 @@ jobs:
               labels: label
             });
 
-            if (!hasDrift) {
+            if (!hasOutdated && !hasErrors) {
               for (const issue of issues) {
                 await github.rest.issues.createComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issue.number,
-                  body: `Resolved: no residual outdated manifests on re-check.\n\nRun: ${runUrl}`
+                  body: `Resolved: no residual outdated manifests and no checkver errors on re-check.\n\nRun: ${runUrl}`
                 });
                 await github.rest.issues.update({
                   owner: context.repo.owner,
@@ -178,41 +189,75 @@ jobs:
               return;
             }
 
+            const intro = [];
+            const fixes = [];
+
+            if (hasOutdated) {
+              intro.push(
+                `- ${outdatedCount} manifest(s) **lag upstream**: \`checkver\` did find a newer version, but \`autoupdate\` did not land (bad URL template, asset rename, hash failure, etc.). The Excavate step can still be green.`
+              );
+              fixes.push(
+                'For each lagging manifest (rewrite the URL and refresh hashes from upstream):',
+                '',
+                '```powershell',
+                '.\\bin\\checkver.ps1 <app> -u',
+                '```'
+              );
+            }
+
+            if (hasErrors) {
+              intro.push(
+                `- ${errorCount} manifest(s) **cannot be checked at all**: \`checkver\` failed, so whether they are current is unknown. This is a \`checkver\` problem, not an \`autoupdate\` one.`
+              );
+              fixes.push(
+                'For each uncheckable manifest (inspect the error first — do **not** use `-u`, it needs a working checkver):',
+                '',
+                '```powershell',
+                '.\\bin\\checkver.ps1 <app> -ThrowError',
+                '```'
+              );
+            }
+
+            const kinds = [hasOutdated ? 'outdated' : null, hasErrors ? 'checkver broken' : null].filter(Boolean);
+            const title = `⚠️ Unhealthy manifests (${kinds.join(' + ')})`;
+
             const body = [
-              'Excavator finished, but **one or more manifests still lag upstream** (or checkver errors remain).',
+              'Excavator finished, but the bucket is not fully healthy.',
               '',
-              'This usually means `checkver` found a new version, but `autoupdate` soft-failed (bad URL template, asset rename, hash failure, etc.) — the main Excavate step can still be green.',
+              ...intro,
               '',
               summary,
               '',
               `Actions run: ${runUrl}`,
               '',
               '### Fix locally',
-              '```powershell',
-              '.\\bin\\checkver.ps1 <app> -u',
-              '```'
+              ...fixes
             ].join('\n');
 
             if (issues.length > 0) {
               const issue = issues[0];
+              // Rename an existing issue too: its title is derived from the current
+              // state, so a leftover title from an earlier failure kind would keep
+              // describing a fault that has since changed.
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
+                title,
                 body
               });
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
-                body: `Updated after run ${runUrl}`
+                body: `Updated after run ${runUrl} (${kinds.join(', ')})`
               });
               console.log(`Updated issue #${issue.number}`);
             } else {
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: '⚠️ Manifests lagging upstream (autoupdate soft-fail)',
+                title,
                 labels: [label],
                 body
               });

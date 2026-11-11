@@ -23,13 +23,15 @@ scoop install TuringRiff-bucket/<应用名称>
 
 ## 维护
 
-清单由 [Excavator](.github/workflows/excavator.yml) 自动更新。仍有滞后的清单会通过带 `manifest-outdated` 标签的 Issue 跟踪，流水线硬失败使用 `excavator-failure` 标签。
+清单由 [Excavator](.github/workflows/excavator.yml) 自动更新。仍滞后于上游、或 `checkver` 完全无法检查的清单，由带 `manifest-outdated` 标签的 Issue 统一跟踪；流水线硬失败使用 `excavator-failure` 标签。
 
 本地检查（需已安装 Scoop）：
 
 ```powershell
 .\bin\lint.ps1                  # 校验清单格式
 .\bin\checkver.ps1 -SkipUpdated # 全部最新时应无输出
+.\bin\detect-outdated.ps1       # 与定时任务相同的滞后报告
+.\bin\checkver-health.ps1       # checkver + 下载地址实测（设置 GITHUB_TOKEN 以避免限流）
 ```
 
 ## 贡献
