@@ -1,4 +1,5 @@
 {
+    "##": "Upstream publishes the full package (fonts + offline dictionary) only in some releases; the versions in between ship just the main EXE. checkver therefore cannot use releases/latest, and a plain api.github.com url would be anonymous and rate limited, so it queries the release list with a token and reports the newest release that actually contains the full archive. per_page must stay at 100 - the gap between full packages has already been 43 releases (3.7.43 -> 3.7.87). Like every checkver.script, it must return rather than throw: an uncaught throw aborts the bucket-wide checkver run.",
     "version": "3.7.87",
     "description": "Unofficial fork of SumatraPDF, a document reader (PDF, EPUB, MOBI, and more) with improvements for Chinese ebooks, offline lookup, themes, and smart PDF dark mode",
     "homepage": "https://github.com/dengxibo/sumatrapdf-plus",
@@ -31,7 +32,17 @@
         "SumatraPDF-settings.txt",
         "sumatrapdfcache"
     ],
-    "checkver": "github",
+    "checkver": {
+        "script": [
+            "$headers = @{ 'User-Agent' = 'Scoop' }",
+            "$token = if (Get-Command Get-GitHubToken -ErrorAction SilentlyContinue) { Get-GitHubToken }",
+            "if ($token) { $headers['Authorization'] = \"Bearer $token\" }",
+            "$releases = Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/dengxibo/sumatrapdf-plus/releases?per_page=100'",
+            "$release = $releases | Where-Object { -not $_.draft -and $_.assets.name -contains 'Sumatra.PDF.Plus.MainProgram+dictionary.zip' } | Select-Object -First 1",
+            "if (-not $release) { return }",
+            "Write-Output $release.tag_name"
+        ]
+    },
     "autoupdate": {
         "architecture": {
             "64bit": {
