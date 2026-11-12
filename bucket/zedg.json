@@ -1,17 +1,17 @@
 {
     "##": "Upstream moved from x6nux/zed-globalization to the x6nux-oss org, and the old owner now 404s, so homepage, checkver and every URL use the new owner. autoupdate.hash.regex must keep $version unescaped: Scoop substitutes it with [Regex]::Escape(version), so a backslash written before it turns the version into a regex backreference that never matches and every update falls back to downloading the whole ~130 MB zip just to compute the hash.",
-    "version": "1.27.0",
+    "version": "1.28.1",
     "description": "Zed Editor (Localized / 汉化版)",
     "homepage": "https://github.com/x6nux-oss/zed-globalization",
     "license": "GPL-3.0-only",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/x6nux-oss/zed-globalization/releases/download/v1.27.0/zedg-zh-cn-windows-x86_64-v1.27.0.zip",
-            "hash": "c1d39e1528742a278ef0ecb540b40c15c3570b5962b1ee389a0a97b69e2e5dff"
+            "url": "https://github.com/x6nux-oss/zed-globalization/releases/download/v1.28.1/zedg-zh-cn-windows-x86_64-v1.28.1.zip",
+            "hash": "135f2150a39270ac7883f95aada2ab47ba18df234638b688320831705aa8bb75"
         },
         "arm64": {
-            "url": "https://github.com/x6nux-oss/zed-globalization/releases/download/v1.27.0/zedg-zh-cn-windows-aarch64-v1.27.0.zip",
-            "hash": "b4f3b76b88d7a40ae479a2d1d9bb34e66db8122602fffc461145754b43288ddc"
+            "url": "https://github.com/x6nux-oss/zed-globalization/releases/download/v1.28.1/zedg-zh-cn-windows-aarch64-v1.28.1.zip",
+            "hash": "3e0fd632c9c66c21b386ca6814a99bc744bf0a4fe98bfe0026b90c73a37211dc"
         }
     },
     "pre_install": [
