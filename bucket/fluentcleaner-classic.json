@@ -10,7 +10,7 @@
             "hash": "f76824cb0b72cc50ed837e8f803c2677a0068949b079b296c07bff6c07b68948"
         }
     },
-    "extract_dir": "FluentCleaner-net48",
+    "extract_dir": "FluentCleaner-Classic-net48",
     "pre_install": [
         "# Older installs keep settings in %APPDATA%, a file both editions share; seed the portable file from there",
         "if ((Test-Path \"$env:APPDATA\\FluentCleaner\\settings.json\") -and -not (Test-Path \"$persist_dir\\settings.json\")) {",
