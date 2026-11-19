@@ -1,13 +1,13 @@
 {
     "##": "The release asset name carries its own build version (e.g. PiliNara_windows_2.2.0+6231_x64_portable.zip) that does NOT track the release tag (2.6.2), so autoupdate cannot rebuild the filename from $version: checkver reports the real asset name and autoupdate reuses it as $matchAsset. This checkver must never throw - Scoop invokes checkver.script with no try/catch, so an uncaught throw aborts the entire bucket-wide checkver run, not just this app. Returning nothing instead makes checkver report this app as an error while every other manifest is still checked.",
-    "version": "2.6.2",
+    "version": "2.2.0",
     "description": "A Flutter BiliBili desktop client forked from PiliPlus, with offline cache support",
     "homepage": "https://github.com/Starfallan/PiliNara",
     "license": "GPL-3.0-only",
     "notes": "The app checks for updates at startup by default; disable it in the app settings if you prefer Scoop-managed updates.",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/Starfallan/PiliNara/releases/download/2.6.2/PiliNara_windows_2.2.0%2B6231_x64_portable.zip",
+            "url": "https://github.com/Starfallan/PiliNara/releases/download/2.2.0/PiliNara_windows_2.2.0%2B6231_x64_portable.zip",
             "hash": "609bca44f7c11707ecbac5f21d98cf5c11b7a74a1a6c07d6f006713865595c29"
         }
     },
