@@ -1,13 +1,13 @@
 {
-    "version": "26.11.123",
+    "version": "26.11.126",
     "description": "Modern Windows system cleaning tool built with WinUI 3 and Fluent Design",
     "homepage": "https://github.com/builtbybel/FluentCleaner",
     "license": "MIT",
     "notes": "FluentCleaner requires the exact Windows App SDK 2.0.1 runtime; newer or older builds abort with 'Unknown Hard Error'. Install it from https://aka.ms/windowsappsdk/2.0/2.0.1/windowsappruntimeinstall-x64.exe and reboot afterwards. Settings, the 'Custom' cleaners folder and Winapp3.ini are kept in the app folder and survive updates. Silent cleanup: 'FCleaner /AUTO' (log: %APPDATA%\\FluentCleaner\\auto.log).",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/builtbybel/FluentCleaner/releases/download/26.11.123/FluentCleaner-win-x64.zip",
-            "hash": "7eb9552432edaafdd0e22fa6fa197c8d75a85bdecf019c4be87ee36ad05d568c"
+            "url": "https://github.com/builtbybel/FluentCleaner/releases/download/26.11.126/FluentCleaner-win-x64.zip",
+            "hash": "6ad2d7625a88451c4149e3f3f775a8069f6146155f5b66eb6ab043904cfbe22d"
         }
     },
     "extract_dir": "FluentCleaner-win-x64",
